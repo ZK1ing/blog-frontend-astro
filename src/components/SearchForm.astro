@@ -1,0 +1,20 @@
+---
+export interface Props {
+  placeholder?: string
+  defaultValue?: string
+}
+const { placeholder = '搜索文章...', defaultValue = '' } = Astro.props
+---
+
+<form action="/search" method="get" class="relative max-w-md w-full">
+  <input
+    name="q"
+    type="text"
+    value={defaultValue}
+    placeholder={placeholder}
+    class="w-full pl-10 pr-4 py-2.5 text-[15px] border border-gray-200 rounded-full bg-gray-50 focus:outline-none focus:border-gray-300 focus:bg-white transition-all"
+  />
+  <svg class="w-4 h-4 text-[#aeaeb2] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/>
+  </svg>
+</form>

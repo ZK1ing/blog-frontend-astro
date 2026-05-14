@@ -1,0 +1,39 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+const redirect = Astro.url.searchParams.get('redirect') || '/admin'
+---
+
+<BaseLayout title="登录">
+  <div class="min-h-screen flex items-center justify-center bg-[rgb(var(--color-bg-secondary))] px-5">
+    <div class="card p-8 w-full max-w-[380px] bg-[rgb(var(--color-card))]">
+      <h1 class="text-[21px] font-bold text-[rgb(var(--color-text))] text-center mb-8">登录后台</h1>
+      <form id="login-form" class="space-y-4">
+        <input name="username" type="text" placeholder="用户名" class="input-field" required />
+        <input name="password" type="password" placeholder="密码" class="input-field" required />
+        <p id="login-error" class="text-[13px] text-red-500 hidden"></p>
+        <button type="submit" class="btn-primary w-full">登录</button>
+      </form>
+    </div>
+  </div>
+</BaseLayout>
+
+<script>
+  import { login } from '../lib/auth'
+
+  const form = document.getElementById('login-form')!
+  const errorEl = document.getElementById('login-error')!
+  const redirect = new URLSearchParams(window.location.search).get('redirect') || '/admin'
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault()
+    errorEl.classList.add('hidden')
+    const fd = new FormData(form as HTMLFormElement)
+    try {
+      await login(fd.get('username') as string, fd.get('password') as string)
+      window.location.href = redirect
+    } catch (err) {
+      errorEl.textContent = err instanceof Error ? err.message : '登录失败'
+      errorEl.classList.remove('hidden')
+    }
+  })
+</script>

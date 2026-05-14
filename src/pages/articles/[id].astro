@@ -1,0 +1,104 @@
+---
+import PublicLayout from '../../layouts/PublicLayout.astro'
+import CommentSection from '../../components/CommentSection.vue'
+import { getArticleDetail } from '../../lib/api'
+import { marked } from 'marked'
+import type { ArticleDetailVO } from '../../lib/types'
+
+export const prerender = false
+
+const { id } = Astro.params
+let article: ArticleDetailVO | null = null
+let html = ''
+let error: string | null = null
+
+try {
+  const res = await getArticleDetail(Number(id))
+  article = res.data
+  html = article.contentHtml || marked(article.contentMd || '')
+} catch (e) {
+  error = e instanceof Error ? e.message : '文章加载失败'
+}
+
+if (!article && !error) {
+  return new Response(null, { status: 404 })
+}
+
+function formatDate(d: string) {
+  return new Date(d).toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })
+}
+---
+
+<PublicLayout title={article?.title || '文章'}>
+  <div class="max-w-3xl mx-auto px-5 py-12 animate-fade-in-up">
+    {
+      error && <p class="text-center py-16 text-[rgb(var(--color-text-tertiary))]">{error}</p>
+    }
+    {
+      article && (
+        <article>
+          <header class="mb-10">
+            <h1 class="text-[34px] font-bold text-[rgb(var(--color-text))] leading-tight mb-4">
+              {article.title}
+            </h1>
+            <div class="flex flex-wrap items-center gap-3 text-[15px] text-[rgb(var(--color-text-tertiary))] mb-4">
+              <time>{formatDate(article.createTime)}</time>
+              <span>&middot;</span>
+              <span>{article.viewCount} 次阅读</span>
+              {article.categoryName && (
+                <>
+                  <span>&middot;</span>
+                  <a href={`/categories/${article.categoryId}`} class="text-[rgb(var(--color-accent))] hover:underline">
+                    {article.categoryName}
+                  </a>
+                </>
+              )}
+            </div>
+            <div class="flex flex-wrap gap-1.5">
+              {article.tags.map(t => (
+                <a href={`/tags/${t.id}`} class="tag">{t.name}</a>
+              ))}
+            </div>
+          </header>
+
+          {article.coverImage && (
+            <img src={article.coverImage} alt={article.title} class="w-full rounded-lg mb-10" />
+          )}
+
+          <div class="prose prose-lg max-w-none text-[17px] text-[rgb(var(--color-text))] leading-relaxed
+            prose-headings:text-[rgb(var(--color-text))]
+            prose-a:text-[rgb(var(--color-accent))]
+            prose-strong:text-[rgb(var(--color-text))]
+            prose-blockquote:border-l-[rgb(var(--color-accent))]
+            prose-code:text-[rgb(var(--color-text))]
+            [&_pre]:bg-[rgb(var(--color-code-bg))]
+            [&_pre]:text-[rgb(var(--color-code-text))]"
+            set:html={html}
+          />
+
+          <!-- Prev / Next nav -->
+          <nav class="mt-16 pt-8 border-t border-[rgb(var(--color-border))] flex justify-between gap-4">
+            {
+              article.prev && (
+                <a href={`/articles/${article.prev.id}`} class="text-[15px] text-[rgb(var(--color-text-secondary))] hover:text-[rgb(var(--color-text))] transition-colors max-w-[50%]">
+                  <span class="text-[12px] text-[rgb(var(--color-text-tertiary))] block mb-0.5">上一篇</span>
+                  <span class="font-medium">{article.prev.title}</span>
+                </a>
+              )
+            }
+            {
+              article.next && (
+                <a href={`/articles/${article.next.id}`} class="text-[15px] text-[rgb(var(--color-text-secondary))] hover:text-[rgb(var(--color-text))] transition-colors max-w-[50%] text-right ml-auto">
+                  <span class="text-[12px] text-[rgb(var(--color-text-tertiary))] block mb-0.5">下一篇</span>
+                  <span class="font-medium">{article.next.title}</span>
+                </a>
+              )
+            }
+          </nav>
+        </article>
+      )
+    }
+
+    {article && <CommentSection articleId={article.id} client:load />}
+  </div>
+</PublicLayout>

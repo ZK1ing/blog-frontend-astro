@@ -1,0 +1,35 @@
+---
+export interface Props {
+  current: number
+  total: number
+  pageSize?: number
+}
+
+const { current, total, pageSize = 10 } = Astro.props
+const totalPages = Math.ceil(total / pageSize)
+
+if (totalPages <= 1) return null
+
+const url = new URL(Astro.request.url)
+const basePath = url.pathname
+---
+
+<nav class="flex justify-center gap-1 mt-8">
+  {
+    Array.from({ length: totalPages }, (_, i) => i + 1).map(p => {
+      const pageUrl = `${basePath}?page=${p}`
+      return (
+        <a
+          href={pageUrl}
+          class={`w-8 h-8 rounded-lg text-[13px] font-medium flex items-center justify-center transition-colors ${
+            p === current
+              ? 'bg-gray-200 text-[#1d1d1f]'
+              : 'text-[#aeaeb2] hover:bg-gray-100 hover:text-[#6e6e73]'
+          }`}
+        >
+          {p}
+        </a>
+      )
+    })
+  }
+</nav>

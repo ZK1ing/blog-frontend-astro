@@ -1,0 +1,89 @@
+---
+import PublicLayout from '../../layouts/PublicLayout.astro'
+import { getArticles, getTags } from '../../lib/api'
+import type { ArticleListVO } from '../../lib/types'
+
+export const prerender = false
+
+const { id } = Astro.params
+const pageNum = Number(Astro.url.searchParams.get('page') || 1)
+const pageSize = 10
+
+let articles: ArticleListVO[] = []
+let total = 0
+let tagName = ''
+let allTags: { id: number; name: string; articleCount: number }[] = []
+
+try {
+  const [tagsRes, artRes] = await Promise.all([
+    getTags(),
+    getArticles({ tagId: Number(id), pageNum, pageSize }),
+  ])
+  articles = artRes.data.records
+  total = artRes.data.total
+  allTags = tagsRes.data
+  tagName = tagsRes.data.find(t => t.id === Number(id))?.name || `标签`
+} catch {}
+
+function formatDate(d: string) {
+  return new Date(d).toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })
+}
+const totalPages = Math.ceil(total / pageSize)
+---
+
+<PublicLayout title={`#${tagName}`}>
+  <div class="max-w-3xl mx-auto px-5 py-16 animate-fade-in-up">
+    <h1 class="text-[34px] font-bold text-[rgb(var(--color-text))] mb-2">#{tagName}</h1>
+    <p class="text-[15px] text-[rgb(var(--color-text-tertiary))] mb-6">共 {total} 篇文章</p>
+
+    <!-- All tags -->
+    <div class="flex flex-wrap gap-2 mb-12">
+      {allTags.map(t => (
+        <a
+          href={`/tags/${t.id}`}
+          class={`tag ${t.id === Number(id) ? '!bg-[rgb(var(--color-accent))] !text-white !border-[rgb(var(--color-accent))]' : ''}`}
+        >
+          {t.name} ({t.articleCount})
+        </a>
+      ))}
+    </div>
+
+    {
+      articles.length === 0
+        ? <p class="text-center py-12 text-[rgb(var(--color-text-tertiary))]">暂无文章</p>
+        : (
+          <div class="space-y-12">
+            {articles.map(a => (
+              <article>
+                <a href={`/articles/${a.id}`} class="group block">
+                  <h2 class="text-[21px] font-bold text-[rgb(var(--color-text))] group-hover:text-[rgb(var(--color-accent))] transition-colors leading-snug mb-1.5">{a.title}</h2>
+                  <div class="flex items-center gap-3 text-[14px] text-[rgb(var(--color-text-tertiary))] mb-3">
+                    <time>{formatDate(a.createTime)}</time>
+                    <span>&middot; {a.viewCount} 次阅读</span>
+                  </div>
+                  <p class="text-[16px] text-[rgb(var(--color-text-secondary))] leading-relaxed line-clamp-3">{a.summary || '暂无摘要'}</p>
+                </a>
+              </article>
+            ))}
+          </div>
+        )
+    }
+
+    {
+      totalPages > 1 && (
+        <nav class="flex justify-center gap-2 mt-16 pt-8 border-t border-[rgb(var(--color-border))]">
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
+            <a
+              href={`/tags/${id}?page=${p}`}
+              class={`w-9 h-9 rounded-md text-[14px] font-medium flex items-center justify-center transition-colors ${
+                p === pageNum ? 'bg-[rgb(var(--color-accent))] text-white' : 'text-[rgb(var(--color-text-secondary))] hover:bg-[rgb(var(--color-bg-secondary))]'
+              }`}
+            >
+              {p}
+            </a>
+          ))}
+        </nav>
+      )
+    }
+  </div>
+</PublicLayout>

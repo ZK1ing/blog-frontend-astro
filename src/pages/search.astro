@@ -1,0 +1,90 @@
+---
+import PublicLayout from '../layouts/PublicLayout.astro'
+import { getArticles } from '../lib/api'
+import type { ArticleListVO } from '../lib/types'
+
+export const prerender = false
+
+const q = Astro.url.searchParams.get('q') || ''
+const pageNum = Number(Astro.url.searchParams.get('page') || 1)
+const pageSize = 10
+
+let articles: ArticleListVO[] = []
+let total = 0
+
+if (q) {
+  try {
+    const res = await getArticles({ keyword: q, pageNum, pageSize })
+    articles = res.data.records
+    total = res.data.total
+  } catch {}
+}
+
+function formatDate(d: string) {
+  return new Date(d).toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })
+}
+const totalPages = Math.ceil(total / pageSize)
+---
+
+<PublicLayout title={q ? `搜索: ${q}` : '搜索'}>
+  <div class="max-w-3xl mx-auto px-5 py-16 animate-fade-in-up">
+    <h1 class="text-[34px] font-bold text-[rgb(var(--color-text))] mb-8">搜索</h1>
+
+    <form action="/search" method="get" class="relative mb-12">
+      <input
+        name="q"
+        type="search"
+        value={q}
+        placeholder="输入关键词搜索文章..."
+        class="w-full pl-12 pr-4 py-3.5 text-[16px] border border-[rgb(var(--color-border))] rounded-lg bg-[rgb(var(--color-bg))] text-[rgb(var(--color-text))] focus:outline-none focus:border-[rgb(var(--color-accent))] focus:ring-3 focus:ring-[rgba(var(--color-accent),0.12)] transition"
+      />
+      <svg class="w-5 h-5 text-[rgb(var(--color-text-tertiary))] absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/>
+      </svg>
+    </form>
+
+    {
+      q && (
+        <>
+          <p class="text-[15px] text-[rgb(var(--color-text-tertiary))] mb-10">
+            {total > 0 ? `找到 ${total} 篇关于「${q}」的文章` : `未找到关于「${q}」的文章`}
+          </p>
+          {
+            articles.length > 0 && (
+              <div class="space-y-12">
+                {articles.map(a => (
+                  <article>
+                    <a href={`/articles/${a.id}`} class="group block">
+                      <h2 class="text-[21px] font-bold text-[rgb(var(--color-text))] group-hover:text-[rgb(var(--color-accent))] transition-colors leading-snug mb-1.5">{a.title}</h2>
+                      <div class="flex items-center gap-3 text-[14px] text-[rgb(var(--color-text-tertiary))] mb-3">
+                        <time>{formatDate(a.createTime)}</time>
+                        {a.categoryName && <span>&middot; {a.categoryName}</span>}
+                      </div>
+                      <p class="text-[16px] text-[rgb(var(--color-text-secondary))] leading-relaxed line-clamp-3">{a.summary || '暂无摘要'}</p>
+                    </a>
+                  </article>
+                ))}
+              </div>
+            )
+          }
+          {
+            totalPages > 1 && (
+              <nav class="flex justify-center gap-2 mt-16 pt-8 border-t border-[rgb(var(--color-border))]">
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
+                  <a
+                    href={`/search?q=${encodeURIComponent(q)}&page=${p}`}
+                    class={`w-9 h-9 rounded-md text-[14px] font-medium flex items-center justify-center transition-colors ${
+                      p === pageNum ? 'bg-[rgb(var(--color-accent))] text-white' : 'text-[rgb(var(--color-text-secondary))] hover:bg-[rgb(var(--color-bg-secondary))]'
+                    }`}
+                  >
+                    {p}
+                  </a>
+                ))}
+              </nav>
+            )
+          }
+        </>
+      )
+    }
+  </div>
+</PublicLayout>

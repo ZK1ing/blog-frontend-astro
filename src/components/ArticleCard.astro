@@ -1,0 +1,45 @@
+---
+import type { ArticleListVO } from '../lib/types'
+import TagPill from './TagPill.astro'
+
+export interface Props {
+  article: ArticleListVO
+}
+
+const { article } = Astro.props
+const href = `/articles/${article.id}`
+---
+
+<a href={href} class="card group block overflow-hidden transition-colors">
+  {
+    article.coverImage && (
+      <div class="aspect-[16/9] overflow-hidden bg-gray-50">
+        <img
+          src={article.coverImage}
+          alt={article.title}
+          class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          loading="lazy"
+        />
+      </div>
+    )
+  }
+  <div class="p-5">
+    <div class="flex items-center gap-2 mb-2">
+      {article.categoryName && (
+        <span class="text-[12px] text-[#0066cc] font-medium">{article.categoryName}</span>
+      )}
+    </div>
+    <h3 class="text-[21px] font-semibold text-[#1d1d1f] mb-2 leading-snug group-hover:text-[#0066cc] transition-colors">
+      {article.title}
+    </h3>
+    <p class="text-[15px] text-[#6e6e73] line-clamp-2 mb-3 leading-relaxed">
+      {article.summary || '暂无摘要'}
+    </p>
+    <div class="flex items-center gap-1.5 flex-wrap">
+      {article.tags.map(tag => <TagPill name={tag} />)}
+    </div>
+    <p class="text-[12px] text-[#aeaeb2] mt-3">
+      {new Date(article.createTime).toLocaleDateString('zh-CN')}
+    </p>
+  </div>
+</a>
