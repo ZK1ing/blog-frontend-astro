@@ -5,901 +5,1049 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>博客系统 — 全栈源码深度教学文档</title>
 <style>
-/* ===== CSS Custom Properties ===== */
 :root {
-  --bg: #0a0a0f;
-  --bg-secondary: #111118;
-  --bg-card: #16161f;
-  --bg-hover: #1e1e2a;
-  --border: #252530;
-  --text: #e1e1e9;
-  --text-secondary: #9898aa;
-  --text-tertiary: #6b6b7d;
-  --accent: #3b82f6;
-  --accent-dim: #2563eb;
-  --green: #22c55e;
-  --amber: #f59e0b;
-  --red: #ef4444;
-  --purple: #a855f7;
-  --cyan: #06b6d4;
-  --font-mono: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
-  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
-  --sidebar-width: 280px;
-  --radius: 8px;
-  --radius-lg: 12px;
+  --bg: #08080d; --bg-secondary: #0e0e16; --bg-card: #13131d;
+  --bg-hover: #1a1a28; --border: #222230;
+  --text: #e4e4ed; --text-secondary: #9d9db0; --text-tertiary: #666680;
+  --accent: #3b82f6; --accent-dim: #2563eb; --green: #22c55e;
+  --amber: #f59e0b; --red: #ef4444; --purple: #a855f7; --cyan: #06b6d4;
+  --font-mono: 'JetBrains Mono','Fira Code','Consolas',monospace;
+  --font-sans: 'Inter',system-ui,-apple-system,sans-serif;
+  --sidebar-width: 290px; --radius: 6px; --radius-lg: 10px;
 }
-* { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
-body {
-  font-family: var(--font-sans);
-  background: var(--bg);
-  color: var(--text);
-  line-height: 1.7;
-  display: flex;
-  min-height: 100vh;
-}
-
-/* ===== Sidebar ===== */
-.sidebar {
-  position: fixed; top: 0; left: 0; bottom: 0;
-  width: var(--sidebar-width);
-  background: var(--bg-secondary);
-  border-right: 1px solid var(--border);
-  overflow-y: auto;
-  z-index: 100;
-  padding: 24px 20px;
-}
-.sidebar h2 {
-  font-size: 15px; font-weight: 700; color: var(--text);
-  letter-spacing: -0.3px;
-  margin-bottom: 4px;
-}
-.sidebar .subtitle { font-size: 11px; color: var(--text-tertiary); margin-bottom: 24px; text-transform: uppercase; letter-spacing: 1px; }
-.sidebar nav { display: flex; flex-direction: column; gap: 2px; }
-.sidebar nav a {
-  display: block; padding: 6px 12px; border-radius: 6px;
-  font-size: 13px; color: var(--text-secondary); text-decoration: none;
-  transition: all 0.15s;
-}
-.sidebar nav a:hover { background: var(--bg-hover); color: var(--text); }
-.sidebar nav a.active { background: rgba(59,130,246,0.12); color: var(--accent); font-weight: 600; }
-.sidebar .section-title {
-  font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px;
-  color: var(--text-tertiary); margin-top: 20px; margin-bottom: 6px;
-  padding-left: 12px;
-}
-
-/* ===== Main Content ===== */
-.main {
-  margin-left: var(--sidebar-width);
-  padding: 40px 56px;
-  max-width: 960px;
-  width: 100%;
-}
-.main h1 { font-size: 36px; font-weight: 800; letter-spacing: -1px; margin-bottom: 8px; line-height: 1.2; }
-.main h1 .accent { color: var(--accent); }
-.main .header-desc { font-size: 15px; color: var(--text-secondary); margin-bottom: 48px; }
-.main h2 {
-  font-size: 26px; font-weight: 700; letter-spacing: -0.5px;
-  margin-top: 64px; margin-bottom: 16px; padding-bottom: 12px;
-  border-bottom: 1px solid var(--border);
-}
-.main h2 .num { color: var(--accent); margin-right: 10px; font-size: 20px; }
-.main h3 { font-size: 19px; font-weight: 600; margin-top: 36px; margin-bottom: 12px; color: var(--text); }
-.main h4 { font-size: 15px; font-weight: 600; margin-top: 24px; margin-bottom: 8px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; }
-.main p { font-size: 15px; color: var(--text-secondary); margin-bottom: 16px; }
-
-/* ===== Cards ===== */
-.card {
-  background: var(--bg-card); border: 1px solid var(--border);
-  border-radius: var(--radius-lg); padding: 24px; margin-bottom: 24px;
-}
-.card h4 { margin-top: 0; color: var(--text); }
-.card p { margin-bottom: 12px; }
-
-/* ===== Code ===== */
-pre {
-  background: #0d0d14; border: 1px solid var(--border);
-  border-radius: var(--radius); padding: 16px 20px;
-  overflow-x: auto; margin-bottom: 20px;
-  font-family: var(--font-mono); font-size: 13px; line-height: 1.6;
-}
-code { font-family: var(--font-mono); font-size: 13px; }
-p code, li code { background: rgba(59,130,246,0.1); color: var(--accent); padding: 1px 6px; border-radius: 3px; font-size: 13px; }
-.token-keyword { color: #c678dd; }
-.token-string { color: #98c379; }
-.token-comment { color: #5c6370; font-style: italic; }
-.token-annotation { color: #e5c07b; }
-.token-type { color: #61afef; }
-.token-func { color: #61afef; }
-.token-number { color: #d19a66; }
-
-/* ===== Diagrams ===== */
-.diagram {
-  background: var(--bg-card); border: 1px solid var(--border);
-  border-radius: var(--radius-lg); padding: 32px 24px; margin-bottom: 24px;
-  overflow-x: auto;
-}
-.diagram-title { font-size: 13px; font-weight: 600; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px; text-align: center; }
-
-/* Flow chart */
-.flow { display: flex; align-items: center; gap: 0; flex-wrap: wrap; justify-content: center; padding: 16px 0; }
-.flow-box {
-  background: var(--bg-hover); border: 1px solid var(--border);
-  border-radius: var(--radius); padding: 10px 16px; font-size: 13px;
-  white-space: nowrap; text-align: center; font-weight: 500;
-}
-.flow-box.accent { border-color: var(--accent); background: rgba(59,130,246,0.1); color: var(--accent); }
-.flow-box.green { border-color: var(--green); background: rgba(34,197,94,0.08); color: var(--green); }
-.flow-box.amber { border-color: var(--amber); background: rgba(245,158,11,0.08); color: var(--amber); }
-.flow-box.red { border-color: var(--red); background: rgba(239,68,68,0.08); color: var(--red); }
-.flow-box.purple { border-color: var(--purple); background: rgba(168,85,247,0.08); color: var(--purple); }
-.flow-box.cyan { border-color: var(--cyan); background: rgba(6,182,212,0.08); color: var(--cyan); }
-.flow-arrow { color: var(--text-tertiary); font-size: 18px; margin: 0 8px; flex-shrink: 0; }
-.flow-arrow.down { display: block; text-align: center; margin: 4px 0; }
-
-/* Vertical flow */
-.vflow { display: flex; flex-direction: column; align-items: center; gap: 0; }
-.vflow .flow-box { min-width: 280px; }
-.vflow .flow-arrow { margin: 2px 0; }
-
-/* Architecture grid */
-.arch-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
-.arch-box {
-  background: var(--bg-hover); border: 1px solid var(--border);
-  border-radius: var(--radius); padding: 16px; text-align: center;
-}
-.arch-box strong { display: block; font-size: 14px; margin-bottom: 4px; }
-.arch-box span { font-size: 11px; color: var(--text-tertiary); }
-.arch-box.module { border-color: var(--accent); border-left: 3px solid var(--accent); }
-
-/* Feature list */
-.feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; margin-bottom: 24px; }
-.feature-item {
-  background: var(--bg-card); border: 1px solid var(--border);
-  border-radius: var(--radius); padding: 16px;
-}
-.feature-item h4 { font-size: 14px; margin-bottom: 4px; }
-.feature-item p { font-size: 13px; color: var(--text-tertiary); margin: 0; }
-
-/* ===== Comparison Table ===== */
-table { width: 100%; border-collapse: collapse; margin-bottom: 24px; font-size: 14px; }
-thead th {
-  text-align: left; padding: 10px 14px; background: var(--bg-secondary);
-  border-bottom: 1px solid var(--border); font-weight: 600; color: var(--text);
-  font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;
-}
-tbody td {
-  padding: 10px 14px; border-bottom: 1px solid var(--border);
-  color: var(--text-secondary);
-}
-tbody tr:hover td { background: var(--bg-hover); }
-.tag {
-  display: inline-block; padding: 2px 8px; border-radius: 4px;
-  font-size: 11px; font-weight: 600; letter-spacing: 0.3px;
-}
-.tag-blue { background: rgba(59,130,246,0.15); color: var(--accent); }
-.tag-green { background: rgba(34,197,94,0.12); color: var(--green); }
-.tag-amber { background: rgba(245,158,11,0.12); color: var(--amber); }
-.tag-red { background: rgba(239,68,68,0.12); color: var(--red); }
-.tag-purple { background: rgba(168,85,247,0.12); color: var(--purple); }
-
-/* Highlight box */
-.highlight {
-  background: rgba(59,130,246,0.06); border-left: 3px solid var(--accent);
-  padding: 16px 20px; border-radius: 0 var(--radius) var(--radius) 0;
-  margin-bottom: 20px;
-}
-.highlight p { margin: 0; color: var(--text); font-size: 14px; }
-.highlight strong { color: var(--accent); }
-
-/* Responsive */
-@media (max-width: 900px) {
-  .sidebar { display: none; }
-  .main { margin-left: 0; padding: 24px 20px; }
-}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--font-sans);background:var(--bg);color:var(--text);line-height:1.75;display:flex;min-height:100vh}
+.sidebar{position:fixed;top:0;left:0;bottom:0;width:var(--sidebar-width);background:var(--bg-secondary);border-right:1px solid var(--border);overflow-y:auto;z-index:100;padding:22px 18px}
+.sidebar h2{font-size:14px;font-weight:700;color:var(--text);letter-spacing:-0.3px;margin-bottom:3px}
+.sidebar .subtitle{font-size:10px;color:var(--text-tertiary);margin-bottom:20px;text-transform:uppercase;letter-spacing:1.2px}
+.sidebar nav{display:flex;flex-direction:column;gap:1px}
+.sidebar nav a{display:block;padding:5px 10px;border-radius:5px;font-size:12.5px;color:var(--text-secondary);text-decoration:none;transition:all 0.15s}
+.sidebar nav a:hover{background:var(--bg-hover);color:var(--text)}
+.sidebar nav a.active{background:rgba(59,130,246,0.1);color:var(--accent);font-weight:600}
+.sidebar .sec{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-tertiary);margin-top:18px;margin-bottom:5px;padding-left:10px}
+.main{margin-left:var(--sidebar-width);padding:36px 52px;max-width:1000px;width:100%}
+.main h1{font-size:34px;font-weight:800;letter-spacing:-1px;margin-bottom:6px;line-height:1.2}
+.main h1 .accent{color:var(--accent)}
+.main .hd{font-size:14px;color:var(--text-secondary);margin-bottom:44px}
+.main h2{font-size:24px;font-weight:700;margin-top:56px;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border);letter-spacing:-0.4px}
+.main h2 .n{color:var(--accent);margin-right:8px;font-size:18px}
+.main h3{font-size:18px;font-weight:600;margin-top:32px;margin-bottom:10px;color:var(--text)}
+.main h4{font-size:14px;font-weight:600;margin-top:22px;margin-bottom:6px;color:var(--accent);text-transform:uppercase;letter-spacing:0.4px;font-size:13px}
+.main p{font-size:14px;color:var(--text-secondary);margin-bottom:14px}
+.main ul{margin-bottom:16px;padding-left:20px}
+.main li{font-size:14px;color:var(--text-secondary);margin-bottom:4px}
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:22px;margin-bottom:22px}
+.card h4{margin-top:0}
+.card p{margin-bottom:10px}
+pre{background:#0a0a12;border:1px solid var(--border);border-radius:var(--radius);padding:14px 18px;overflow-x:auto;margin-bottom:18px;font-family:var(--font-mono);font-size:12.5px;line-height:1.6}
+code{font-family:var(--font-mono);font-size:12.5px}
+p code,li code{background:rgba(59,130,246,0.08);color:var(--accent);padding:1px 5px;border-radius:3px}
+.kw{color:#c678dd}.str{color:#98c379}.cm{color:#5c6370;font-style:italic}.an{color:#e5c07b}.tp{color:#61afef}.fn{color:#61afef}.nu{color:#d19a66}
+.diagram{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px 22px;margin-bottom:22px;overflow-x:auto}
+.dt{font-size:12px;font-weight:600;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:1px;margin-bottom:18px;text-align:center}
+.flow{display:flex;align-items:center;gap:0;flex-wrap:wrap;justify-content:center;padding:12px 0}
+.fb{background:var(--bg-hover);border:1px solid var(--border);border-radius:var(--radius);padding:9px 14px;font-size:12.5px;white-space:nowrap;text-align:center;font-weight:500}
+.fb.ac{border-color:var(--accent);background:rgba(59,130,246,0.08);color:var(--accent)}
+.fb.gr{border-color:var(--green);background:rgba(34,197,94,0.06);color:var(--green)}
+.fb.am{border-color:var(--amber);background:rgba(245,158,11,0.06);color:var(--amber)}
+.fb.rd{border-color:var(--red);background:rgba(239,68,68,0.06);color:var(--red)}
+.fb.pu{border-color:var(--purple);background:rgba(168,85,247,0.06);color:var(--purple)}
+.fb.cy{border-color:var(--cyan);background:rgba(6,182,212,0.06);color:var(--cyan)}
+.fa{color:var(--text-tertiary);font-size:16px;margin:0 7px;flex-shrink:0}
+.fad{display:block;text-align:center;margin:3px 0}
+.vf{display:flex;flex-direction:column;align-items:center;gap:0}
+.vf .fb{min-width:260px}
+.vf .fa{margin:2px 0}
+.ag{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}
+.ab{background:var(--bg-hover);border:1px solid var(--border);border-radius:var(--radius);padding:14px;text-align:center}
+.ab strong{display:block;font-size:13px;margin-bottom:3px}
+.ab span{font-size:11px;color:var(--text-tertiary)}
+.ab.mod{border-color:var(--accent);border-left:3px solid var(--accent);text-align:left}
+.fg{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px;margin-bottom:22px}
+.fi{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:14px}
+.fi h4{font-size:13px;margin-bottom:3px;text-transform:none;letter-spacing:0;color:var(--text)}
+.fi p{font-size:12px;color:var(--text-tertiary);margin:0}
+table{width:100%;border-collapse:collapse;margin-bottom:22px;font-size:13px}
+th{text-align:left;padding:9px 12px;background:var(--bg-secondary);border-bottom:1px solid var(--border);font-weight:600;color:var(--text);font-size:11px;text-transform:uppercase;letter-spacing:0.5px}
+td{padding:9px 12px;border-bottom:1px solid var(--border);color:var(--text-secondary)}
+tbody tr:hover td{background:var(--bg-hover)}
+.tg{display:inline-block;padding:2px 7px;border-radius:3px;font-size:10.5px;font-weight:600;letter-spacing:0.3px}
+.tb{background:rgba(59,130,246,0.12);color:var(--accent)}
+.tg{background:rgba(34,197,94,0.1);color:var(--green)}
+.ta{background:rgba(245,158,11,0.1);color:var(--amber)}
+.tr{background:rgba(239,68,68,0.1);color:var(--red)}
+.tp2{background:rgba(168,85,247,0.1);color:var(--purple)}
+.hl{background:rgba(59,130,246,0.04);border-left:3px solid var(--accent);padding:14px 18px;border-radius:0 var(--radius) var(--radius) 0;margin-bottom:18px}
+.hl p{margin:0;color:var(--text);font-size:13px}
+.hl strong{color:var(--accent)}
+.pkg{background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px;margin-bottom:18px}
+.pkg h4{font-size:14px;font-weight:700;color:var(--accent);margin-bottom:8px;text-transform:none;letter-spacing:0}
+.pkg h4 .ic{color:var(--text-tertiary);font-weight:400;font-size:12px}
+.pkg .files{margin-left:16px}
+.pkg .files li{margin-bottom:3px;font-size:13px}
+.pkg .files li strong{color:var(--text)}
+@media(max-width:900px){.sidebar{display:none}.main{margin-left:0;padding:22px 18px}}
 </style>
 </head>
 <body>
 
-<!-- ===== SIDEBAR ===== -->
 <aside class="sidebar">
   <h2>Blog 全栈教学</h2>
-  <div class="subtitle">源码级架构文档 v1.0</div>
+  <div class="subtitle">源码级架构文档 v2.0</div>
   <nav>
-    <a href="#overview" class="active">项目总览</a>
-    <div class="section-title">后端架构</div>
-    <a href="#p1">一、Maven 多模块架构</a>
-    <a href="#p2">二、SpringBoot 启动流程</a>
-    <a href="#p3">三、认证授权系统</a>
-    <a href="#p4">四、blog-common 深度解析</a>
-    <a href="#p5">五、MyBatis-Plus 工程化</a>
-    <a href="#p6">六、分类模块源码教学</a>
-    <a href="#p7">七、Redis 缓存设计</a>
-    <a href="#p8">八、项目工程化思想</a>
-    <div class="section-title">前端架构</div>
-    <a href="#p9">九、前端架构深度教学</a>
-    <a href="#p9-tech">　技术栈选型</a>
-    <a href="#p9-dir">　目录结构设计</a>
-    <a href="#p9-api">　API 封装层</a>
-    <a href="#p9-auth">　认证与权限</a>
-    <a href="#p9-callchain">　前后端调用链</a>
-    <a href="#p9-engineering">　前端工程化思想</a>
+    <a href="#pre">前置阅读</a>
+    <div class="sec">第一部分：项目架构</div>
+    <a href="#p1-0">一、项目总览</a>
+    <a href="#p1-1">　1.1 目录结构全景</a>
+    <a href="#p1-2">　1.2 Maven 多模块</a>
+    <a href="#p1-3">　1.3 为什么这样设计</a>
+    <div class="sec">第二部分：各模块源码</div>
+    <a href="#p2-1">二、blog-common 逐文件</a>
+    <a href="#p2-2">三、blog-auth 逐文件</a>
+    <a href="#p2-3">四、blog-core 逐文件</a>
+    <a href="#p2-4">五、blog-file 逐文件</a>
+    <a href="#p2-5">六、blog-api 启动模块</a>
+    <div class="sec">第三部分：核心机制</div>
+    <a href="#p3-1">七、认证鉴权深度</a>
+    <a href="#p3-2">八、Redis 缓存深度</a>
+    <a href="#p3-3">九、MyBatis-Plus 工程化</a>
+    <a href="#p3-4">十、工程化思想</a>
+    <div class="sec">第四部分：前端架构</div>
+    <a href="#p4-1">十一、前端架构</a>
   </nav>
 </aside>
 
-<!-- ===== MAIN CONTENT ===== -->
 <main class="main">
 
-<!-- ========== OVERVIEW ========== -->
-<h1 id="overview">博客系统 <span class="accent">全栈源码</span>深度教学</h1>
-<p class="header-desc">
-  面向中高级 Java / 前端开发者的项目架构教学文档。
-  覆盖 SpringBoot 3 后端 + Astro 5 前端，从 Maven 多模块到 Vue 组件树，逐层剖析。
-  本文档基于项目真实源码，非示例代码。
-</p>
+<h1 id="pre">博客系统 <span class="accent">全栈源码</span>深度教学</h1>
+<p class="hd">面向中高级开发者。基于 SpringBoot 3.2 + Astro 5 真实项目源码，逐文件逐模块讲解。<br>阅读本文档前建议 clone 项目对照查看：<code>ZK1ing/blog-server</code> + <code>ZK1ing/blog-frontend-astro</code></p>
 
 <div class="card">
-  <h4>项目定位</h4>
-  <p>个人博客系统 — 基于 <strong>SpringBoot 3.2</strong> 的企业级单体后端 + <strong>Astro 5 SSR</strong> 前端。后端 71 个 Java 文件，前端 36 个源文件。支持 JWT 双 Token 认证、Redis 缓存、MyBatis-Plus 分页、Markdown 渲染、暗色/亮色主题。</p>
-  <p><strong>GitHub</strong>：<code>ZK1ing/blog-server</code> + <code>ZK1ing/blog-frontend-astro</code></p>
+  <h4>阅读指南</h4>
+  <p>本文档按"从底层到上层"的顺序组织。先讲最基础的 <code>blog-common</code>（没有任何业务逻辑，纯基础设施），再讲 <code>blog-auth</code>（认证），然后 <code>blog-core</code>（核心业务），最后 <code>blog-api</code>（启动组装）。每个模块逐包、逐文件讲解，<strong>解释"这个文件是干什么的、为什么要这样写、解决了什么问题"</strong>。</p>
 </div>
 
-<div class="feature-grid">
-  <div class="feature-item"><h4>后端</h4><p>SpringBoot 3.2.5 · MyBatis-Plus 3.5.5 · Spring Security · JWT (jjwt 0.12) · Redis · MySQL · Knife4j · MapStruct · Flexmark · Hutool</p></div>
-  <div class="feature-item"><h4>前端</h4><p>Astro 5 SSR · Vue 3.5 · Tailwind CSS v4 · @astrojs/node · marked · highlight.js · TypeScript</p></div>
-  <div class="feature-item"><h4>认证</h4><p>JWT 双 Token（Access 15min + Refresh 7d）· BCrypt 密码哈希 · Redis 黑名单 · Token 轮换 · Cookie 存储</p></div>
-  <div class="feature-item"><h4>缓存</h4><p>Cache-Aside 旁路缓存 · 延迟双删 · 随机 TTL · Redis Key 集中管理 · 文章/分类/标签三级缓存</p></div>
+<!-- ================================================================================== -->
+<h1 style="margin-top:56px;">第一部分：项目架构</h1>
+<!-- ================================================================================== -->
+
+<h2 id="p1-0"><span class="n">一</span>项目总览与目录结构全景</h2>
+
+<h3>1.1 后端目录结构 — 每个文件夹是什么</h3>
+
+<div class="pkg">
+<h4>blog-server/ <span class="ic">— 项目根目录（Maven 父 POM）</span></h4>
+<ul class="files">
+<li><strong>pom.xml</strong> — 父 POM。定义 5 个子模块、统一管理所有第三方依赖版本（SpringBoot 3.2.5、MyBatis-Plus 3.5.5、jjwt 0.12.5 等 10+ 依赖）、配置全局编译插件（Lombok + MapStruct 注解处理器）</li>
+<li><strong>README.md / DESIGN.md / CLAUDE.md</strong> — 项目文档</li>
+<li><strong>docs/</strong> — 额外文档资源</li>
+</ul>
 </div>
 
-<!-- ========== OVERALL ARCHITECTURE DIAGRAM ========== -->
+<div class="pkg">
+<h4>blog-common/ <span class="ic">— 公共基础模块（被所有模块依赖的最底层）</span></h4>
+<ul class="files">
+<li><strong>com.blog.common.base/</strong> — 实体基类。BaseEntity 定义 createTime/updateTime 自动填充字段</li>
+<li><strong>com.blog.common.config/</strong> — Spring 配置类。Redis 序列化、MyBatis-Plus 分页插件和自动填充、Jackson 日期格式化、CORS + 静态资源映射</li>
+<li><strong>com.blog.common.exception/</strong> — 异常体系。4 个异常类 + 1 个全局异常处理器</li>
+<li><strong>com.blog.common.filter/</strong> — Servlet 过滤器。TraceIdFilter 链路追踪</li>
+<li><strong>com.blog.common.interceptor/</strong> — Spring 拦截器。RateLimitInterceptor 限流 + PV/UV 统计</li>
+<li><strong>com.blog.common.result/</strong> — 统一响应。R&lt;T&gt; 响应体 + ResultCode 状态码枚举</li>
+<li><strong>com.blog.common.util/</strong> — 工具类。RedisKeys 常量、ServletUtils 工具</li>
+</ul>
+</div>
+
+<div class="pkg">
+<h4>blog-auth/ <span class="ic">— 认证授权模块</span></h4>
+<ul class="files">
+<li><strong>com.blog.auth.config/</strong> — SecurityConfig：Spring Security 配置（放行规则、Filter 注册、BCrypt、异常处理）</li>
+<li><strong>com.blog.auth.controller/</strong> — AuthController：登录/登出/刷新 Token 三个 REST 接口</li>
+<li><strong>com.blog.auth.entity/</strong> — User 实体（对应 user 表）</li>
+<li><strong>com.blog.auth.mapper/</strong> — UserMapper（MyBatis-Plus BaseMapper）</li>
+<li><strong>com.blog.auth.model.dto/</strong> — LoginDTO、RefreshDTO（前端传给后端的对象）</li>
+<li><strong>com.blog.auth.model.vo/</strong> — LoginVO（后端返回给前端的对象）</li>
+<li><strong>com.blog.auth.security/</strong> — JwtAuthFilter（JWT 认证过滤器）+ JwtTokenProvider（JWT 创建/解析/校验工具）</li>
+<li><strong>com.blog.auth.service/</strong> — AuthService 接口 + AuthServiceImpl 实现</li>
+<li><strong>com.blog.auth.util/</strong> — SecurityUtils（从 SecurityContext 取当前用户）</li>
+</ul>
+</div>
+
+<div class="pkg">
+<h4>blog-core/ <span class="ic">— 核心业务模块（文章/分类/标签/评论）</span></h4>
+<ul class="files">
+<li><strong>com.blog.core.entity/</strong> — 5 个数据库实体：Article、Category、Tag、ArticleTag、Comment</li>
+<li><strong>com.blog.core.mapper/</strong> — 5 个 Mapper 接口（MyBatis-Plus BaseMapper）</li>
+<li><strong>com.blog.core.model.dto/</strong> — 5 个 DTO（前端→后端）：ArticleDTO、CategoryDTO、TagDTO、CommentDTO、CommentStatusDTO</li>
+<li><strong>com.blog.core.model.query/</strong> — 4 个 Query 对象（分页+筛选条件）：ArticleQuery、CategoryQuery、TagQuery、CommentQuery</li>
+<li><strong>com.blog.core.model.vo/</strong> — 8 个 VO（后端→前端）：ArticleListVO、ArticleDetailVO、ArticleMetaVO、ArticlePrevNextVO、CategoryVO、TagVO、CommentVO、AdminCommentVO</li>
+<li><strong>com.blog.core.service/</strong> — 4 个 Service 接口</li>
+<li><strong>com.blog.core.service.impl/</strong> — 4 个 ServiceImpl（含全部业务逻辑+缓存+事务）</li>
+<li><strong>com.blog.core.controller.admin/</strong> — 4 个管理端 Controller（需 ADMIN 角色）</li>
+<li><strong>com.blog.core.controller.pub/</strong> — 4 个公开 Controller（无需登录）</li>
+</ul>
+</div>
+
+<div class="pkg">
+<h4>blog-file/ <span class="ic">— 文件管理模块</span></h4>
+<ul class="files">
+<li><strong>com.blog.file.controller/</strong> — FileController：文件上传 REST 接口</li>
+<li><strong>com.blog.file.model.vo/</strong> — FileVO：上传响应（url + originalName + size）</li>
+<li><strong>com.blog.file.service/</strong> — FileService 接口 + FileServiceImpl（扩展名+MIME 双重白名单校验）</li>
+</ul>
+</div>
+
+<div class="pkg">
+<h4>blog-api/ <span class="ic">— 启动聚合模块</span></h4>
+<ul class="files">
+<li><strong>com.blog/</strong> — BlogApplication（唯一的 @SpringBootApplication 入口）</li>
+<li><strong>src/main/resources/</strong> — application.yml + application-dev.yml + application-prod.yml + logback-spring.xml + schema.sql + data.sql</li>
+</ul>
+</div>
+
+<!-- ================================================================================== -->
+<h2 id="p1-2"><span class="n">1.2</span>Maven 多模块依赖关系</h2>
+
 <div class="diagram">
-  <div class="diagram-title">前后端整体架构</div>
-  <div class="flow" style="flex-direction:column;align-items:center;gap:12px;">
-    <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;justify-content:center;">
-      <div class="flow-box accent" style="padding:16px 24px;font-size:14px;">浏览器<br><span style="font-size:11px;color:var(--text-tertiary)">Astro SSR + Vue 3 SPA</span></div>
-      <div class="flow-arrow">→</div>
-      <div class="flow-box cyan" style="padding:16px 24px;font-size:14px;">Nginx / Vite Proxy<br><span style="font-size:11px;color:var(--text-tertiary)">/api → localhost:8080</span></div>
-      <div class="flow-arrow">→</div>
-      <div class="flow-box green" style="padding:16px 24px;font-size:14px;">SpringBoot 3.2<br><span style="font-size:11px;color:var(--text-tertiary)">blog-api (启动模块)</span></div>
-    </div>
+  <div class="dt">模块依赖层级图（箭头 = "依赖"）</div>
+  <div class="vf">
+    <div class="fb ac" style="padding:14px 32px;font-size:14px;">blog-api<br><span style="font-size:11px;color:var(--text-tertiary)">启动模块 · 唯一 @SpringBootApplication</span></div>
+    <div class="fad" style="margin:8px 0;">↓ 依赖（pom.xml 中声明）</div>
     <div style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center;">
-      <div class="flow-box purple">JwtAuthFilter<br><span style="font-size:11px;color:var(--text-tertiary)">认证拦截</span></div>
-      <div class="flow-box amber">Controller<br><span style="font-size:11px;color:var(--text-tertiary)">REST API 端点</span></div>
-      <div class="flow-box red">Service<br><span style="font-size:11px;color:var(--text-tertiary)">业务逻辑 + 事务</span></div>
-      <div class="flow-box" style="border-color:var(--green);background:rgba(34,197,94,0.08);color:var(--green);">Mapper<br><span style="font-size:11px;color:var(--text-tertiary)">MyBatis-Plus</span></div>
+      <div class="fb pu" style="padding:12px 20px;">blog-auth<br><span style="font-size:11px;color:var(--text-tertiary)">安全认证</span></div>
+      <div class="fb gr" style="padding:12px 20px;">blog-core<br><span style="font-size:11px;color:var(--text-tertiary)">核心业务</span></div>
+      <div class="fb am" style="padding:12px 20px;">blog-file<br><span style="font-size:11px;color:var(--text-tertiary)">文件服务</span></div>
     </div>
-    <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;justify-content:center;">
-      <div class="flow-box cyan" style="min-width:120px;">MySQL</div>
-      <div class="flow-box red" style="min-width:120px;">Redis</div>
-    </div>
+    <div class="fad" style="margin:8px 0;">↓ 全部依赖</div>
+    <div class="fb cy" style="padding:14px 32px;font-size:14px;">blog-common<br><span style="font-size:11px;color:var(--text-tertiary)">公共基础 · 被所有模块依赖 · 不依赖任何模块</span></div>
   </div>
 </div>
 
-<!-- ================================================================================== -->
-<!-- PART 1: Maven Multi-Module -->
-<!-- ================================================================================== -->
-<h2 id="p1"><span class="num">一</span>Maven 多模块架构</h2>
-
-<h3>1.1 为什么要拆模块？</h3>
-
-<div class="highlight">
-  <p><strong>核心原则：</strong>编译期隔离，运行期聚合。每个模块只暴露最小 API 面，内部实现细节对外不可见。</p>
+<div class="hl">
+  <p><strong>关键规则：</strong>blog-common 不依赖任何其他模块。blog-auth 和 blog-core 和 blog-file 都依赖 blog-common。blog-api 依赖所有模块。<br>
+  blog-core 依赖 blog-auth（因为需要 SecurityUtils 获取当前用户）。blog-auth 不依赖 blog-core。<br>
+  这是单向无环依赖（DAG），保证了编译顺序和模块边界清晰。</p>
 </div>
 
-<p>项目共 5 个 Maven 模块，由父 POM 统一管理版本：</p>
+<!-- ================================================================================== -->
+<h2 id="p1-3"><span class="n">1.3</span>关键设计决策 — 为什么这样设计</h2>
 
-<div class="arch-grid">
-  <div class="arch-box module"><strong>blog-api</strong><span>启动模块 · 唯一 @SpringBootApplication</span></div>
-  <div class="arch-box module"><strong>blog-auth</strong><span>认证授权 · Security + JWT</span></div>
-  <div class="arch-box module"><strong>blog-core</strong><span>核心业务 · 文章/分类/标签/评论</span></div>
-  <div class="arch-box module"><strong>blog-file</strong><span>文件服务 · 上传/管理</span></div>
-  <div class="arch-box module"><strong>blog-common</strong><span>公共基础 · R/异常/Redis/工具</span></div>
+<div class="fg">
+  <div class="fi"><h4>为什么拆 5 个模块而不是一个大 jar？</h4><p>编译期隔离 = 代码边界强制。blog-auth 不能访问 blog-core 的 ArticleService，blog-core 不能访问 blog-auth 的 JwtTokenProvider（除非显式声明依赖）。模块边界就是代码规范——不会出现"写着写着就相互引用成一团乱麻"的情况。</p></div>
+  <div class="fi"><h4>为什么是单体而不是微服务？</h4><p>个人博客的流量不需要微服务的弹性伸缩能力，但微服务的复杂度（网络延迟、分布式事务、服务发现、配置中心）是实打实的。用 Maven 模块实现"代码级解耦"，保留"单体部署的运维简单性"，是最佳性价比选择。</p></div>
+  <div class="fi"><h4>为什么父 POM 统一版本？</h4><p>5 个模块如果各自声明依赖版本，升级时可能出现 blog-auth 用 jjwt 0.11、blog-core 用 jjwt 0.12 的冲突。父 POM 的 &lt;dependencyManagement&gt; 集中管理，子模块只声明 GAV 不写版本号，一改全改。</p></div>
+  <div class="fi"><h4>为什么把 auth 独立出来？</h4><p>认证授权是横切关注点，和具体业务（文章/分类）无关。独立后：① auth 可以单独升级安全策略而不影响业务；② 未来如果需要把认证改为 OAuth2/OIDC，只改 blog-auth 一个模块；③ 如果要做多系统 SSO，blog-auth 可以直接抽成独立服务。</p></div>
 </div>
 
-<h4>依赖关系图</h4>
+<!-- ================================================================================== -->
+<h1 style="margin-top:56px;">第二部分：各模块源码逐文件讲解</h1>
+<!-- ================================================================================== -->
+
+<h2 id="p2-1"><span class="n">二</span>blog-common — 公共基础模块（17 个文件）</h2>
+
+<p>blog-common 是整个项目的"地基"。它不包含任何业务逻辑——没有文章、没有分类、没有用户。它只提供所有模块都会用到的<strong>基础设施</strong>：响应格式、异常处理、配置、工具类。理解 blog-common 是理解整个项目的第一步。</p>
+
+<div class="card">
+<h4>模块定位</h4>
+<p>📦 <strong>Maven 坐标</strong>：com.blog:blog-common · 无父模块之外的依赖<br>
+📂 <strong>包路径</strong>：com.blog.common（7 个子包）<br>
+📏 <strong>文件数量</strong>：17 个 Java 文件<br>
+⬇️ <strong>被依赖</strong>：blog-auth、blog-core、blog-file、blog-api（所有模块）</p>
+</div>
+
+<!-- ========== R.java ========== -->
+<h3>2.1 com.blog.common.result — 统一响应包</h3>
+
+<h4>R&lt;T&gt;.java — 为什么所有接口返回同一个格式？</h4>
+
+<p>前后端分离架构中，后端每个接口的响应格式必须统一，前端才能写统一的拦截器和错误处理。如果有的接口返回 <code>{"data":...}</code>、有的返回 <code>{"error":"..."}</code>、有的直接抛 500 页面，前端就要针对每种情况写不同的处理逻辑——这是灾难。</p>
+
+<p><code>R&lt;T&gt;</code> 解决的就是这个问题：</p>
+<ul>
+  <li><strong>code</strong>（Integer）：业务状态码。200=成功，401=未登录，403=无权限，404=不存在。前端根据 code 做统一拦截（如 code=401 弹登录框）</li>
+  <li><strong>message</strong>（String）：人类可读的提示信息，可以直接展示给用户</li>
+  <li><strong>data</strong>（T 泛型）：实际数据。可以是 ArticleDetailVO、Page&lt;ArticleListVO&gt;、或者 null</li>
+  <li><strong>timestamp</strong>（Long）：响应时间戳，便于排查问题</li>
+</ul>
+
+<p><strong>静态工厂方法的设计思想：</strong></p>
+
+<pre><span class="cm">// 成功 — 只需关心数据，code 和 message 自动填充</span>
+<span class="tp">R</span>.<span class="fn">ok</span>(articleDetailVO);         <span class="cm">// code=200, message="操作成功"</span>
+
+<span class="cm">// 失败 — 传入 ResultCode 枚举，类型安全</span>
+<span class="tp">R</span>.<span class="fn">fail</span>(<span class="tp">ResultCode</span>.UNAUTHORIZED);  <span class="cm">// code=401, message="未登录或 Token 已过期"</span>
+<span class="tp">R</span>.<span class="fn">fail</span>(<span class="tp">ResultCode</span>.NOT_FOUND);     <span class="cm">// code=404</span>
+
+<span class="cm">// 也可以自定义消息</span>
+<span class="tp">R</span>.<span class="fn">fail</span>(<span class="nu">400</span>, <span class="str">"用户名已存在"</span>);      <span class="cm">// 自由定制的错误信息</span></pre>
+
+<p><strong>为什么不直接用 HTTP 状态码判断成败？</strong> HTTP 状态码只有大约 20 个常用值，无法表达丰富的业务语义。而且 HTTP 状态码是传输层的概念，业务状态码是应用层的概念——两者应该分离。R&lt;T&gt;.code 可以承载任意业务语义，不限于 HTTP 的 4xx/5xx。</p>
+
+<h4>ResultCode.java — 状态码为什么用枚举？</h4>
+
+<p>状态码不用字符串 ("UNAUTHORIZED") 或魔法数字 (401)，而用枚举：</p>
+<ul>
+  <li><strong>编译器检查</strong>：打成 "UNAUTHORISED" 编译不通过</li>
+  <li><strong>IDE 自动补全</strong>：不需要记忆状态码</li>
+  <li><strong>统一管理</strong>：所有状态码集中在一个文件，一眼看清项目有哪些错误类型</li>
+  <li><strong>每个枚举项自带 message</strong>：code 和 message 绑定，不会出现 code=401 但 message 写着 "参数错误" 的混乱</li>
+</ul>
+
+<pre><span class="kw">public</span> <span class="kw">enum</span> <span class="tp">ResultCode</span> {
+    <span class="fn">SUCCESS</span>(<span class="nu">200</span>, <span class="str">"操作成功"</span>),          <span class="cm">// 成功</span>
+    <span class="fn">BAD_REQUEST</span>(<span class="nu">400</span>, <span class="str">"参数错误"</span>),     <span class="cm">// 参数校验失败</span>
+    <span class="fn">UNAUTHORIZED</span>(<span class="nu">401</span>, <span class="str">"未登录或 Token 已过期"</span>), <span class="cm">// 认证失败</span>
+    <span class="fn">FORBIDDEN</span>(<span class="nu">403</span>, <span class="str">"无权限访问"</span>),     <span class="cm">// 已登录但权限不足</span>
+    <span class="fn">NOT_FOUND</span>(<span class="nu">404</span>, <span class="str">"资源不存在"</span>),     <span class="cm">// 数据查不到</span>
+    <span class="fn">TOO_MANY_REQUESTS</span>(<span class="nu">429</span>, <span class="str">"请求过于频繁"</span>), <span class="cm">// 触发限流</span>
+    <span class="fn">INTERNAL_ERROR</span>(<span class="nu">500</span>, <span class="str">"服务器内部错误"</span>),  <span class="cm">// 未知异常兜底</span>
+    <span class="cm">// ... 更多状态码</span>
+}</pre>
+
+<!-- ========== Exception ========== -->
+<h3>2.2 com.blog.common.exception — 异常体系</h3>
+
+<h4>为什么要自定义异常？</h4>
+
+<p>Java 标准异常（IllegalArgumentException、RuntimeException）无法携带业务状态码。如果 Controller 层抛了 RuntimeException，全局异常处理器只能统一返回 500——但实际可能是 404（资源不存在）、401（未登录）、403（无权限）。</p>
+
+<p>自定义异常类携带 <code>ResultCode</code>，全局异常处理器根据不同的异常类型返回不同的 HTTP 状态码 + 业务状态码。</p>
+
+<pre><span class="cm">// ★ 异常继承树（4 层）</span>
+<span class="tp">RuntimeException</span>
+  └── <span class="tp">BusinessException</span>        <span class="cm">// 基类，携带 ResultCode</span>
+        ├── <span class="tp">UnauthorizedException</span>  <span class="cm">// 401 — 未登录/Token无效</span>
+        ├── <span class="tp">ForbiddenException</span>     <span class="cm">// 403 — 已登录但无权限</span>
+        ├── <span class="tp">NotFoundException</span>     <span class="cm">// 404 — 资源不存在</span>
+        └── <span class="tp">BusinessException</span>     <span class="cm">// 400 — 通用业务异常（可自定义消息）</span></pre>
+
+<p><strong>BusinessException 的两个构造器体现了灵活性：</strong></p>
+<ul>
+  <li><code>new BusinessException(ResultCode.UNAUTHORIZED)</code> → 使用状态码的默认消息</li>
+  <li><code>new BusinessException(ResultCode.UNAUTHORIZED, "用户名或密码错误")</code> → 保留状态码，覆盖消息文本</li>
+  <li><code>new BusinessException("分类下存在子分类，无法删除")</code> → 默认 400，自定义业务语义</li>
+</ul>
+
+<h4>GlobalExceptionHandler.java — 为什么 Controller 不写 try-catch？</h4>
+
+<div class="hl">
+  <p><strong>核心思想：</strong>Controller 代码里不应该出现 try-catch。异常是"非正常流程"，应该由框架统一处理。Controller 只需要写"正常流程"的代码——接参数、调 Service、返回 R.ok()。任何异常（参数校验失败、认证失败、业务异常、未知异常）都由 <code>@RestControllerAdvice</code> 统一拦截并转换为 R 格式。</p>
+</div>
+
 <div class="diagram">
-  <div class="flow" style="flex-direction:column;align-items:center;gap:4px;">
-    <div class="flow-box accent">blog-api</div>
-    <div class="flow-arrow down">↓ 依赖</div>
-    <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;">
-      <div class="flow-box purple">blog-auth</div>
-      <div class="flow-box green">blog-core</div>
-      <div class="flow-box amber">blog-file</div>
+  <div class="dt">异常处理流程</div>
+  <div class="flow" style="flex-direction:column;align-items:center;gap:6px;">
+    <div class="fb rd">Controller 正常执行 → 抛出异常</div>
+    <div class="fad">↓</div>
+    <div class="fb am">@RestControllerAdvice 按异常类型匹配 @ExceptionHandler</div>
+    <div class="fad">↓</div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;">
+      <div class="fb" style="font-size:11px;">MethodArgumentNotValidException<br>→ 400 + 拼接字段错误</div>
+      <div class="fb" style="font-size:11px;">UnauthorizedException<br>→ 401</div>
+      <div class="fb" style="font-size:11px;">ForbiddenException<br>→ 403</div>
+      <div class="fb" style="font-size:11px;">NotFoundException<br>→ 404</div>
+      <div class="fb" style="font-size:11px;">BusinessException<br>→ 400</div>
+      <div class="fb rd" style="font-size:11px;">Exception（兜底）<br>→ 500 + log.error</div>
     </div>
-    <div class="flow-arrow down">↓ 全部依赖</div>
-    <div class="flow-box cyan">blog-common（最底层）</div>
+    <div class="fad">↓</div>
+    <div class="fb gr">统一返回 R.fail(code, message)<br>前端始终收到统一的 JSON 格式</div>
   </div>
 </div>
 
-<h3>1.2 为什么不是微服务？</h3>
+<h3>2.3 com.blog.common.filter — TraceIdFilter 链路追踪</h3>
+
+<h4>这个类是干什么的？</h4>
+<p>每个 HTTP 请求进入后端时，TraceIdFilter 给它分配一个全局唯一的 traceId（16 位 UUID），并通过 SLF4J 的 <strong>MDC（Mapped Diagnostic Context）</strong> 机制注入到当前线程的所有日志输出中。</p>
+
+<p><strong>实际效果：</strong>一次请求可能经过 Filter → Controller → Service → Mapper 多个层，每层都可能打日志。没有 traceId，你无法把分散在几百行日志里的同一个请求关联起来。有了 traceId，grep 一下就能看到完整调用链。</p>
+
+<pre><span class="cm">// 日志输出效果对比</span>
+
+<span class="cm">// 没有 traceId（无法关联）</span>
+<span class="nu">2026-05-14 10:23:45</span> INFO  - 接收到文章查询请求
+<span class="nu">2026-05-14 10:23:45</span> INFO  - 查询文章列表，pageNum=<span class="nu">1</span>
+<span class="nu">2026-05-14 10:23:45</span> INFO  - 返回 <span class="nu">10</span> 条文章
+
+<span class="cm">// 有 traceId（grep a1b2c3d4 看到完整链路）</span>
+<span class="nu">2026-05-14 10:23:45</span> [a1b2c3d4] INFO  - 接收到文章查询请求
+<span class="nu">2026-05-14 10:23:45</span> [a1b2c3d4] INFO  - 查询文章列表，pageNum=<span class="nu">1</span>
+<span class="nu">2026-05-14 10:23:45</span> [a1b2c3d4] INFO  - 返回 <span class="nu">10</span> 条文章</pre>
+
+<p><strong>关键细节：</strong></p>
+<ul>
+  <li><code>@Order(Ordered.HIGHEST_PRECEDENCE + 10)</code> — 确保在所有 Filter 中第一个执行，traceId 从请求进入的第一刻就存在</li>
+  <li>优先读取前端传的 <code>X-Trace-Id</code> Header — 如果前端已经生成了 traceId，后端复用，实现<strong>全链路追踪</strong>（浏览器 → 后端 → 数据库 同一 traceId）</li>
+  <li>响应 Header 中也返回 <code>X-Trace-Id</code> — 前端可以拿到这个值，出问题时告诉后端 "traceId 是 xxx"</li>
+  <li><code>finally { MDC.clear(); }</code> — <strong>绝对不能忘！</strong>Tomcat 线程池复用线程，不清 MDC 会导致下一个请求的日志带上上一个请求的 traceId</li>
+</ul>
+
+<h3>2.4 com.blog.common.config — 配置类</h3>
+
+<h4>MyBatisPlusConfig.java — 两个关键 Bean</h4>
+<p>这个类做了两件事：</p>
+<ul>
+  <li><strong>分页插件</strong>（MybatisPlusInterceptor + PaginationInnerInterceptor）：MyBatis-Plus 的分页不是自动生效的，必须注册这个插件。它拦截 SQL 执行，自动在查询前加 COUNT 语句、查询后加 LIMIT 语句。如果不注册，Page 对象不会自动分页。</li>
+  <li><strong>自动填充处理器</strong>（MetaObjectHandler）：所有继承 BaseEntity 的实体，在 insert 时自动填充 createTime 和 updateTime，在 update 时自动填充 updateTime。这样就不需要在每个 Service 方法里手动 set 时间——一处配置，全局生效。</li>
+</ul>
+
+<h4>RedisConfig.java — 序列化配置</h4>
+<p>Spring Boot 默认的 RedisTemplate 使用 JDK 序列化，存入 Redis 的 Key 和 Value 都是二进制乱码，无法在 Redis CLI 中直接查看。这个配置类改为：</p>
+<ul>
+  <li>Key → <strong>StringRedisSerializer</strong>（人类可读的字符串）</li>
+  <li>Value → <strong>GenericJackson2JsonRedisSerializer</strong>（JSON 格式，含类型信息可反序列化）</li>
+  <li>ObjectMapper 注册 <strong>JavaTimeModule</strong>（支持 LocalDateTime 序列化）</li>
+</ul>
+
+<h4>JacksonConfig.java — 日期格式统一</h4>
+<p>全局设置 Jackson 的日期序列化规则：所有 <code>LocalDateTime</code> 字段输出为 <code>"yyyy-MM-dd HH:mm:ss"</code> 格式，null 值不输出（<code>NON_NULL</code>）。一处配置，所有 Controller 返回的 JSON 都自动格式化日期。</p>
+
+<h4>WebMvcConfig.java — CORS + 拦截器注册</h4>
+<p>三个职责：① CORS 全局允许跨域（开发阶段方便）；② 注册 RateLimitInterceptor 拦截 /api/** 路径；③ 配置 /uploads/** 静态资源映射（上传的文件可以直接通过 URL 访问）。</p>
+
+<h3>2.5 com.blog.common.util — 工具类</h3>
+
+<h4>RedisKeys.java — 所有 Redis Key 集中管理</h4>
+<p>这是一个 <strong>final 工具类 + private 构造器</strong>（禁止实例化）。项目中所有 Redis Key 都定义在这里：</p>
 
 <table>
-  <thead><tr><th>维度</th><th>单体（本项目）</th><th>微服务</th></tr></thead>
+  <thead><tr><th>常量名</th><th>Key 格式</th><th>TTL</th><th>用途</th></tr></thead>
   <tbody>
-    <tr><td><strong>部署复杂度</strong></td><td>一个 JAR，一条命令启动</td><td>需要 K8s/注册中心/配置中心/网关</td></tr>
-    <tr><td><strong>开发效率</strong></td><td>IDE 一键启动，断点调试方便</td><td>多服务联调，本地环境复杂</td></tr>
-    <tr><td><strong>事务管理</strong></td><td>本地事务 @Transactional 简单可靠</td><td>分布式事务（Seata/SAGA），复杂度高</td></tr>
-    <tr><td><strong>运维成本</strong></td><td>一台服务器即可</td><td>至少 3-5 台 + 中间件集群</td></tr>
-    <tr><td><strong>适用场景</strong></td><td>个人博客、企业官网、中小型系统</td><td>大型电商、多团队协作、高并发系统</td></tr>
-    <tr><td><strong>本项目的选择</strong></td><td><span class="tag tag-green">✓ 单体</span></td><td>过度设计，ROI 极低</td></tr>
+    <tr><td>CACHE_ARTICLE</td><td><code>blog:cache:article:{id}</code></td><td>1h</td><td>文章详情缓存</td></tr>
+    <tr><td>CACHE_ARTICLE_PAGE</td><td><code>blog:cache:articles:page:{n}:cat:{id}</code></td><td>10min</td><td>前台分页列表</td></tr>
+    <tr><td>CACHE_CATEGORY_TREE</td><td><code>blog:cache:categories</code></td><td>2h</td><td>分类树全量</td></tr>
+    <tr><td>CACHE_TAG_ALL</td><td><code>blog:cache:tags</code></td><td>2h</td><td>标签列表全量</td></tr>
+    <tr><td>CACHE_ARTICLES_HOT</td><td><code>blog:cache:articles:hot</code></td><td>30min</td><td>热门文章 Top10</td></tr>
+    <tr><td>TOKEN_REFRESH</td><td><code>blog:token:refresh:{userId}</code></td><td>7d</td><td>RefreshToken 哈希</td></tr>
+    <tr><td>TOKEN_BLACKLIST</td><td><code>blog:token:blacklist:{sha256}</code></td><td>剩余有效</td><td>登出 Token 黑名单</td></tr>
+    <tr><td>STATS_PV_SITE</td><td><code>blog:stats:pv:site:{yyyyMMdd}</code></td><td>—</td><td>站点每日访问量</td></tr>
+    <tr><td>STATS_UV_SITE</td><td><code>blog:stats:uv:site:{yyyyMMdd}</code></td><td>—</td><td>站点每日 UV（HyperLogLog）</td></tr>
+    <tr><td>RATE_LIMIT</td><td><code>blog:ratelimit:{ip}:{path}</code></td><td>60s</td><td>接口限流计数</td></tr>
   </tbody>
 </table>
 
-<div class="highlight">
-  <p><strong>架构原则：</strong>用 Maven 模块实现代码级解耦（编译期），运行时仍然是单体（一个 JVM 进程）。这兼顾了代码组织和运维简单性。如果未来需要拆分，模块边界已经画好，只需把 blog-auth/blog-core/blog-file 各自独立部署并改 HTTP 调用即可。</p>
+<div class="hl">
+  <p><strong>为什么不能直接在代码里写死 "blog:cache:article:" + id？</strong>如果 10 个 Service 里都硬编码，将来要改前缀或格式，需要改 10 个文件。集中管理后，改一处即改全局。<br>
+  Key 命名有层级结构：<code>blog:{功能类别}:{子类别}:{参数}</code>，冒号分隔形成逻辑层级，方便在 Redis 管理工具中按层级浏览。</p>
 </div>
 
-<h3>1.3 父 POM 的版本统一策略</h3>
+<h4>ServletUtils.java — IP 获取工具</h4>
+<p>获取客户端真实 IP 的逻辑比看上去复杂——如果前面有 Nginx/代理，<code>request.getRemoteAddr()</code> 只能拿到代理的 IP。正确做法是先检查 <code>X-Forwarded-For</code> → <code>X-Real-IP</code> → <code>getRemoteAddr()</code>。</p>
 
-<p>所有第三方依赖版本号集中在父 POM 的 <code>&lt;dependencyManagement&gt;</code> 中定义。子模块声明依赖时无需指定版本，自动从父 POM 继承。这样做的好处：</p>
+<!-- ================================================================================== -->
+<h2 id="p2-2"><span class="n">三</span>blog-auth — 认证授权模块（12 个文件）</h2>
 
-<div class="feature-grid">
-  <div class="feature-item"><h4>版本一致性</h4><p>不会出现 blog-auth 用 jjwt 0.11、blog-core 用 jjwt 0.12 的冲突</p></div>
-  <div class="feature-item"><h4>升级方便</h4><p>升 SpringBoot 版本只需改父 POM 一处，所有子模块自动生效</p></div>
-  <div class="feature-item"><h4>传递依赖安全</h4><p>Maven 仲裁机制在父 POM 明确定义下，避免"幽灵版本"问题</p></div>
+<div class="card"><h4>模块定位</h4>
+<p>📦 blog-auth 负责整个系统的<strong>身份认证</strong>和<strong>访问控制</strong>。它依赖 blog-common（需要 R 格式返回、需要 Redis），但<strong>不依赖 blog-core</strong>。<br>
+核心能力：① 用户登录/登出/刷新 Token ② Spring Security + JWT 无状态认证 ③ Token 黑名单 + RefreshToken 轮换防重放。</p>
 </div>
 
-<pre><span class="token-comment">&lt;!-- 父 POM 版本集中营 --&gt;</span>
-<span class="token-tag">&lt;properties&gt;</span>
-  <span class="token-tag">&lt;java.version&gt;</span>17<span class="token-tag">&lt;/java.version&gt;</span>
-  <span class="token-tag">&lt;mybatis-plus.version&gt;</span>3.5.5<span class="token-tag">&lt;/mybatis-plus.version&gt;</span>
-  <span class="token-tag">&lt;jjwt.version&gt;</span>0.12.5<span class="token-tag">&lt;/jjwt.version&gt;</span>
-  <span class="token-tag">&lt;mapstruct.version&gt;</span>1.5.5.Final<span class="token-tag">&lt;/mapstruct.version&gt;</span>
-<span class="token-tag">&lt;/properties&gt;</span></pre>
+<h3>3.1 SecurityConfig — Spring Security 配置（整个安全体系的总控）</h3>
 
-<!-- ================================================================================== -->
-<!-- PART 2: SpringBoot Startup -->
-<!-- ================================================================================== -->
-<h2 id="p2"><span class="num">二</span>SpringBoot 核心启动流程</h2>
+<p>这是整个安全体系的"指挥部"。看看它做了什么决定：</p>
 
-<h3>2.1 BlogApplication — 唯一启动入口</h3>
+<pre><span class="an">@Bean</span>
+<span class="kw">public</span> <span class="tp">SecurityFilterChain</span> <span class="fn">filterChain</span>(<span class="tp">HttpSecurity</span> http) {
+    http
+        <span class="cm">// ① 关闭 CSRF：因为是前后端分离 + JWT 认证，不存在 CSRF 攻击面</span>
+        .<span class="fn">csrf</span>(<span class="tp">AbstractHttpConfigurer</span>::<span class="fn">disable</span>)
 
-<p>整个项目只有一个 <code>@SpringBootApplication</code>。blog-common/blog-auth/blog-core/blog-file 都没有独立的 <code>main</code> 方法——它们是<strong>编译期模块</strong>，运行时统一由此启动。</p>
+        <span class="cm">// ② 无状态会话：不创建 HttpSession，每次请求都带 JWT</span>
+        .<span class="fn">sessionManagement</span>(s -&gt; s
+            .<span class="fn">sessionCreationPolicy</span>(<span class="tp">SessionCreationPolicy</span>.STATELESS))
 
-<pre><span class="token-annotation">@SpringBootApplication</span>  <span class="token-comment">// = @Configuration + @EnableAutoConfiguration + @ComponentScan</span>
-<span class="token-keyword">public class</span> <span class="token-type">BlogApplication</span> {
-    <span class="token-keyword">public static void</span> <span class="token-func">main</span>(<span class="token-type">String</span>[] args) {
-        <span class="token-type">SpringApplication</span>.<span class="token-func">run</span>(<span class="token-type">BlogApplication</span>.<span class="token-keyword">class</span>, args);
+        <span class="cm">// ③ 权限规则：白名单 + 角色要求</span>
+        .<span class="fn">authorizeHttpRequests</span>(auth -&gt; auth
+            .<span class="fn">requestMatchers</span>(<span class="str">"/api/admin/**"</span>).<span class="fn">hasRole</span>(<span class="str">"ADMIN"</span>)  <span class="cm">// 管理端→需ADMIN角色</span>
+            .<span class="fn">requestMatchers</span>(<span class="str">"/api/public/**"</span>).<span class="fn">permitAll</span>()      <span class="cm">// 公开接口→任何人</span>
+            .<span class="fn">anyRequest</span>().<span class="fn">authenticated</span>()                          <span class="cm">// 其余→至少登录</span>
+        )
+
+        <span class="cm">// ④ 插入 JWT 过滤器（在 Spring Security 默认认证过滤器之前）</span>
+        .<span class="fn">addFilterBefore</span>(jwtAuthFilter,
+            <span class="tp">UsernamePasswordAuthenticationFilter</span>.<span class="kw">class</span>)
+
+        <span class="cm">// ⑤ 异常处理：认证失败→401 JSON，授权失败→403 JSON</span>
+        .<span class="fn">exceptionHandling</span>(ex -&gt; ex
+            .<span class="fn">authenticationEntryPoint</span>(<span class="cm">/* 返回 R.fail(401) 的 JSON */</span>)
+            .<span class="fn">accessDeniedHandler</span>(<span class="cm">/* 返回 R.fail(403) 的 JSON */</span>)
+        );
+}</pre>
+
+<div class="hl">
+  <p><strong>设计决策一：为什么关闭 CSRF？</strong><br>
+  CSRF 攻击的前提是浏览器自动携带 Cookie 发送请求。但本项目用 JWT 放在 Authorization Header 中，浏览器不会自动发送 Header——攻击者即使构造了恶意请求，也无法带上 JWT。所以 CSRF 保护是多余的。</p>
+  <p style="margin-top:12px"><strong>设计决策二：为什么是 STATELESS？</strong><br>
+  每个请求独立携带 JWT，服务器不需要记住"这个用户刚才登录过"。服务器可以随时重启而不丢失任何会话状态。多台服务器部署时也不需要 Session 同步。</p>
+  <p style="margin-top:12px"><strong>设计决策三：为什么异常处理要返回 JSON 而不是重定向到登录页？</strong><br>
+  前后端分离架构下，前端不是从后端返回的 HTML 页面，而是独立的 JS 应用。后端返回 302 重定向到 /login，前端 Ajax 请求跟过去也拿不到页面。正确的做法是返回 JSON 格式的错误信息，前端根据 code=401 来决定跳转登录页。</p>
+</div>
+
+<h3>3.2 JwtTokenProvider — JWT 工具（Token 的工厂）</h3>
+
+<p>这个类是 JWT 操作的唯一入口。所有 Token 的创建、解析、校验都经过这里。</p>
+
+<pre><span class="cm">// ★ 常量定义</span>
+<span class="kw">private static final</span> <span class="tp">long</span> ACCESS_EXPIRATION  = <span class="nu">15</span> * <span class="nu">60</span> * <span class="nu">1000L</span>;    <span class="cm">// AccessToken 15分钟</span>
+<span class="kw">public static final</span> <span class="tp">long</span> REFRESH_EXPIRATION = <span class="nu">7</span> * <span class="nu">24</span> * <span class="nu">60</span> * <span class="nu">60</span> * <span class="nu">1000L</span>; <span class="cm">// RefreshToken 7天</span>
+
+<span class="cm">// ★ 密钥初始化 — 从配置文件读取，确保至少 256 位</span>
+<span class="kw">public</span> <span class="fn">JwtTokenProvider</span>(<span class="an">@Value</span>(<span class="str">"${blog.jwt.secret:...}"</span>) <span class="tp">String</span> secret) {
+    <span class="kw">byte</span>[] keyBytes = <span class="kw">new</span> <span class="tp">byte</span>[<span class="nu">32</span>];  <span class="cm">// 256位 = 32字节</span>
+    <span class="tp">System</span>.<span class="fn">arraycopy</span>(secret.getBytes(), <span class="nu">0</span>, keyBytes, <span class="nu">0</span>,
+        <span class="tp">Math</span>.<span class="fn">min</span>(secret.getBytes().length, <span class="nu">32</span>));
+    <span class="kw">this</span>.secretKey = <span class="tp">Keys</span>.<span class="fn">hmacShaKeyFor</span>(keyBytes);
+}</pre>
+
+<p><strong>AccessToken 的载荷（Claims）设计：</strong></p>
+<ul>
+  <li><code>userId</code>：用户 ID，后续通过 SecurityContext 获取当前用户</li>
+  <li><code>role</code>：角色（ADMIN），用于 @PreAuthorize 注解和 Security 的 hasRole 判断</li>
+  <li><code>type: "access"</code>：<strong>区分 Token 类型的关键字段</strong>。防止有人拿 RefreshToken 当 AccessToken 用</li>
+  <li><code>iss: "blog-server"</code>：签发者标识，防止跨应用混用 Token</li>
+  <li><code>exp</code>：过期时间（15 分钟后）</li>
+</ul>
+
+<p><strong>RefreshToken 和 AccessToken 的区别：</strong></p>
+<ul>
+  <li>RefreshToken <strong>不包含 role</strong>（它不用于授权，只用于刷新）</li>
+  <li>RefreshToken 的 type 是 <code>"refresh"</code>（JwtAuthFilter 检测到 type=refresh 会拒绝）</li>
+  <li>RefreshToken 的有效期是 7 天而不是 15 分钟</li>
+  <li>RefreshToken 的哈希存储到 Redis，AccessToken 不存（自包含验证）</li>
+</ul>
+
+<div class="hl">
+  <p><strong>为什么 AccessToken 不存 Redis？</strong>因为它的有效期只有 15 分钟，且需要高频访问（每个请求都要验证）。如果每次请求都查 Redis，Redis 就成了性能瓶颈。JWT 的设计初衷就是"自包含认证"——Token 本身携带足够信息，无需查数据库或缓存即可验证。黑名单是例外——只查登出用户的 Token。</p>
+</div>
+
+<h3>3.3 JwtAuthFilter — JWT 认证过滤器（请求的守门人）</h3>
+
+<p>每个 HTTP 请求到达时，JwtAuthFilter 负责：从 Header 取 Token → 验证签名和有效期 → 检查黑名单 → 设置 SecurityContext。6 步流程：</p>
+
+<div class="diagram">
+  <div class="dt">JwtAuthFilter.doFilterInternal 执行流程</div>
+  <div class="vf">
+    <div class="fb ac">HTTP 请求进入</div>
+    <div class="fad">↓</div>
+    <div class="fb">步骤 1：extractToken() — 从 Authorization Header 提取 Bearer Token</div>
+    <div class="fad">↓ 无 Token？→ 放行，让后续 Security 权限校验拦截</div>
+    <div class="fb gr">步骤 2：validateToken() — 验证签名（防篡改）+ 验证过期时间</div>
+    <div class="fad">↓</div>
+    <div class="fb am">步骤 3：getTokenType() — 只放行 type="access"，拒绝 type="refresh"</div>
+    <div class="fad">↓</div>
+    <div class="fb rd">步骤 4：检查 Redis 黑名单 — hasKey(blog:token:blacklist:{sha256})</div>
+    <div class="fad">↓ 不在黑名单</div>
+    <div class="fb pu">步骤 5：从 JWT Claim 提取 userId + role → 构建 UsernamePasswordAuthenticationToken</div>
+    <div class="fad">↓</div>
+    <div class="fb cy">步骤 6：SecurityContextHolder.getContext().setAuthentication(authentication)</div>
+    <div class="fad">↓</div>
+    <div class="fb gr">chain.doFilter() → 请求继续传递到 Controller</div>
+  </div>
+</div>
+
+<p><strong>为什么继承 OncePerRequestFilter？</strong> 保证每个请求只执行一次过滤。普通的 Filter 在一次请求中可能被调用多次（比如 forward/include），而 JWT 校验只需要做一次。</p>
+
+<p><strong>为什么 JwtAuthFilter 不做数据库查询？</strong> JWT 的自包含特性：userId 和 role 都编码在 Token 中，验证签名即可确认这些信息没有被篡改。如果每次请求都去查 user 表，JWT 的性能优势就荡然无存了。</p>
+
+<h3>3.4 AuthServiceImpl — 登录/登出/刷新 源码级讲解</h3>
+
+<h4>登录流程</h4>
+<pre><span class="kw">public</span> <span class="tp">LoginVO</span> <span class="fn">login</span>(<span class="tp">LoginDTO</span> dto) {
+    <span class="cm">// 1. LambdaQueryWrapper 按 username 查用户</span>
+    <span class="tp">User</span> user = userMapper.<span class="fn">selectOne</span>(
+        <span class="kw">new</span> <span class="tp">LambdaQueryWrapper</span>&lt;<span class="tp">User</span>&gt;()
+            .<span class="fn">eq</span>(<span class="tp">User</span>::<span class="fn">getUsername</span>, dto.<span class="fn">getUsername</span>())
+    );
+    <span class="kw">if</span> (user == <span class="kw">null</span>) <span class="kw">throw new</span> <span class="tp">BusinessException</span>(UNAUTHORIZED, <span class="str">"用户名或密码错误"</span>);
+
+    <span class="cm">// 2. BCrypt 验密 — 注意：密码哈希是单向的，只能 matches 不能 decrypt</span>
+    <span class="kw">if</span> (!passwordEncoder.<span class="fn">matches</span>(dto.<span class="fn">getPassword</span>(), user.<span class="fn">getPasswordHash</span>()))
+        <span class="kw">throw new</span> <span class="tp">BusinessException</span>(UNAUTHORIZED, <span class="str">"用户名或密码错误"</span>);
+
+    <span class="cm">// 3. 签发双 Token</span>
+    <span class="tp">String</span> accessToken  = jwtTokenProvider.<span class="fn">createAccessToken</span>(user.<span class="fn">getId</span>(), user.<span class="fn">getRole</span>());
+    <span class="tp">String</span> refreshToken = jwtTokenProvider.<span class="fn">createRefreshToken</span>(user.<span class="fn">getId</span>());
+
+    <span class="cm">// 4. RefreshToken 存 Redis（存的是 SHA-256 哈希，不是明文）</span>
+    redisTemplate.opsForValue().<span class="fn">set</span>(
+        RedisKeys.TOKEN_REFRESH + user.<span class="fn">getId</span>(),     <span class="cm">// Key: blog:token:refresh:{userId}</span>
+        jwtTokenProvider.<span class="fn">hashToken</span>(refreshToken),    <span class="cm">// Value: SHA-256 哈希</span>
+        Duration.<span class="fn">ofMillis</span>(REFRESH_EXPIRATION)        <span class="cm">// TTL: 7天</span>
+    );
+
+    <span class="kw">return</span> <span class="tp">LoginVO</span>.<span class="fn">builder</span>()
+        .<span class="fn">accessToken</span>(accessToken).<span class="fn">refreshToken</span>(refreshToken)
+        .<span class="fn">userId</span>(user.<span class="fn">getId</span>()).<span class="fn">username</span>(user.<span class="fn">getUsername</span>()).<span class="fn">build</span>();
+}</pre>
+
+<div class="hl">
+  <p><strong>为什么错误消息不区分"用户名不存在"和"密码错误"？</strong>这是安全最佳实践——如果告诉攻击者"用户名不存在"，攻击者就可以枚举系统中的用户名。统一返回"用户名或密码错误"可以防止用户枚举攻击。</p>
+</div>
+
+<h4>登出流程</h4>
+<pre><span class="kw">public void</span> <span class="fn">logout</span>(<span class="tp">String</span> accessToken) {
+    <span class="tp">Long</span> userId = <span class="tp">SecurityUtils</span>.<span class="fn">getCurrentUserId</span>();
+
+    <span class="cm">// 1. 删除 RefreshToken → 该用户下次刷新 Token 会失败</span>
+    redisTemplate.<span class="fn">delete</span>(RedisKeys.TOKEN_REFRESH + userId);
+
+    <span class="cm">// 2. AccessToken 哈希加入黑名单，TTL = Token 剩余有效时间</span>
+    <span class="cm">//    因为 AccessToken 只有 15 分钟，黑名单也只需存最多 15 分钟</span>
+    <span class="tp">Date</span> expiration = jwtTokenProvider.<span class="fn">getExpiration</span>(accessToken);
+    <span class="kw">long</span> remainingMs = expiration.<span class="fn">getTime</span>() - <span class="tp">System</span>.<span class="fn">currentTimeMillis</span>();
+    <span class="kw">if</span> (remainingMs > <span class="nu">0</span>) {
+        redisTemplate.opsForValue().<span class="fn">set</span>(
+            RedisKeys.TOKEN_BLACKLIST + jwtTokenProvider.<span class="fn">hashToken</span>(accessToken),
+            <span class="str">"1"</span>, Duration.<span class="fn">ofMillis</span>(remainingMs));
     }
 }</pre>
 
-<h3>2.2 @ComponentScan 自动扫描机制</h3>
+<h4>Token 刷新流程（含防盗检测）</h4>
+<pre><span class="kw">public</span> <span class="tp">LoginVO</span> <span class="fn">refresh</span>(<span class="tp">RefreshDTO</span> dto) {
+    <span class="cm">// 1. 校验旧 RefreshToken</span>
+    <span class="kw">if</span> (!jwtTokenProvider.<span class="fn">validateToken</span>(oldToken)) <span class="cm">/* 签名无效或过期 */</span>
+    <span class="kw">if</span> (!<span class="str">"refresh"</span>.<span class="fn">equals</span>(jwtTokenProvider.<span class="fn">getTokenType</span>(oldToken))) <span class="cm">/* 类型错误 */</span>
 
-<p>所有模块都在 <code>com.blog</code> 包下：</p>
+    <span class="cm">// 2. 从 Redis 取出存储的哈希</span>
+    <span class="tp">String</span> storedHash = redisTemplate.opsForValue().<span class="fn">get</span>(TOKEN_REFRESH + userId);
 
-<div class="diagram">
-  <div class="flow" style="flex-direction:column;align-items:center;gap:4px;">
-    <div class="flow-box accent">com.blog（根包）</div>
-    <div class="flow-arrow down">↓ @ComponentScan 自动扫描</div>
-    <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;">
-      <div class="flow-box">com.blog.auth.config<br><span style="font-size:11px;color:var(--text-tertiary)">SecurityConfig</span></div>
-      <div class="flow-box">com.blog.auth.security<br><span style="font-size:11px;color:var(--text-tertiary)">JwtAuthFilter</span></div>
-      <div class="flow-box">com.blog.core.service<br><span style="font-size:11px;color:var(--text-tertiary)">ArticleServiceImpl</span></div>
-      <div class="flow-box">com.blog.common.filter<br><span style="font-size:11px;color:var(--text-tertiary)">TraceIdFilter</span></div>
-    </div>
-  </div>
-</div>
+    <span class="cm">// 3. SHA-256(用户传来的旧Token) vs Redis 中存储的哈希</span>
+    <span class="kw">if</span> (!jwtTokenProvider.<span class="fn">hashToken</span>(oldToken).<span class="fn">equals</span>(storedHash)) {
+        <span class="cm">// ★ 不匹配！意味着有人用了已经被轮换掉的旧 Token</span>
+        redisTemplate.<span class="fn">delete</span>(TOKEN_REFRESH + userId);  <span class="cm">// 强制登出</span>
+        <span class="kw">throw new</span> <span class="tp">UnauthorizedException</span>(<span class="str">"检测到令牌异常，请重新登录"</span>);
+    }
 
-<p><strong>关键点：</strong>不需要任何显式配置或 <code>@Import</code>。所有 <code>@Service</code>、<code>@Component</code>、<code>@Configuration</code>、<code>@RestController</code> 自动注册为 Spring Bean。这就是"约定优于配置"。</p>
+    <span class="cm">// 4. 轮换：删除旧 → 生成新双 Token → 新哈希存 Redis</span>
+    redisTemplate.<span class="fn">delete</span>(TOKEN_REFRESH + userId);
+    <span class="tp">String</span> newAccess = jwtTokenProvider.<span class="fn">createAccessToken</span>(userId, role);
+    <span class="tp">String</span> newRefresh = jwtTokenProvider.<span class="fn">createRefreshToken</span>(userId);
+    redisTemplate.opsForValue().<span class="fn">set</span>(TOKEN_REFRESH + userId,
+        jwtTokenProvider.<span class="fn">hashToken</span>(newRefresh), REFRESH_EXPIRATION);
 
-<h3>2.3 Filter 注册顺序</h3>
-
-<div class="diagram">
-  <div class="diagram-title">请求 → Filter 链 → Controller</div>
-  <div class="flow" style="flex-wrap:wrap;">
-    <div class="flow-box">请求到达</div>
-    <div class="flow-arrow">→</div>
-    <div class="flow-box cyan">TraceIdFilter<br><span style="font-size:11px">Order: HIGHEST+10（最先）</span></div>
-    <div class="flow-arrow">→</div>
-    <div class="flow-box purple">JwtAuthFilter<br><span style="font-size:11px">认证拦截</span></div>
-    <div class="flow-arrow">→</div>
-    <div class="flow-box amber">Security FilterChain<br><span style="font-size:11px">权限校验</span></div>
-    <div class="flow-arrow">→</div>
-    <div class="flow-box green">Controller<br><span style="font-size:11px">业务处理</span></div>
-  </div>
-</div>
-
-<p><code>TraceIdFilter</code> 的 <code>@Order(Ordered.HIGHEST_PRECEDENCE + 10)</code> 保证它在所有 Filter 之前执行，为整个请求链路生成追踪 ID。<code>JwtAuthFilter</code> 通过 <code>.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)</code> 插入到 Spring Security 默认的认证过滤器之前。</p>
-
-<!-- ================================================================================== -->
-<!-- PART 3: Auth System -->
-<!-- ================================================================================== -->
-<h2 id="p3"><span class="num">三</span>认证授权系统</h2>
-
-<h3>3.1 Spring Security 配置思想</h3>
-
-<div class="highlight">
-  <p><strong>三关两不：</strong>关闭 Session（无状态）、关闭 CSRF（非 Cookie 认证）、API 分两类（/api/public/** 放行、/api/admin/** 需 ADMIN 角色）。</p>
-</div>
-
-<pre><span class="token-annotation">@Bean</span>
-<span class="token-keyword">public</span> <span class="token-type">SecurityFilterChain</span> <span class="token-func">filterChain</span>(<span class="token-type">HttpSecurity</span> http) <span class="token-keyword">throws</span> <span class="token-type">Exception</span> {
-    http
-        .<span class="token-func">csrf</span>(<span class="token-type">AbstractHttpConfigurer</span>::<span class="token-func">disable</span>)           <span class="token-comment">// 关 CSRF</span>
-        .<span class="token-func">sessionManagement</span>(s -&gt; s
-            .<span class="token-func">sessionCreationPolicy</span>(<span class="token-type">SessionCreationPolicy</span>.STATELESS)) <span class="token-comment">// 关 Session</span>
-        .<span class="token-func">authorizeHttpRequests</span>(auth -&gt; auth
-            .<span class="token-func">requestMatchers</span>(<span class="token-string">"/api/admin/**"</span>).<span class="token-func">hasRole</span>(<span class="token-string">"ADMIN"</span>)  <span class="token-comment">// 后台: 需 ADMIN</span>
-            .<span class="token-func">requestMatchers</span>(<span class="token-string">"/api/public/**"</span>).<span class="token-func">permitAll</span>()      <span class="token-comment">// 公开: 无需登录</span>
-            .<span class="token-func">anyRequest</span>().<span class="token-func">authenticated</span>()
-        )
-        .<span class="token-func">addFilterBefore</span>(jwtAuthFilter, <span class="token-type">UsernamePasswordAuthenticationFilter</span>.<span class="token-keyword">class</span>);
+    <span class="kw">return</span> <span class="tp">LoginVO</span>.<span class="fn">builder</span>().<span class="fn">accessToken</span>(newAccess).<span class="fn">refreshToken</span>(newRefresh)...;
 }</pre>
 
-<h3>3.2 JwtAuthFilter 执行链（完整鉴权流程图）</h3>
+<h3>3.5 SecurityUtils — 在代码中获取当前登录用户</h3>
 
-<div class="diagram">
-  <div class="diagram-title">请求鉴权完整流程</div>
-  <div class="vflow">
-    <div class="flow-box accent">HTTP 请求到达</div>
-    <div class="flow-arrow down">↓</div>
-    <div class="flow-box">1. extractToken() — 从 Header 取 Bearer Token</div>
-    <div class="flow-arrow down">↓ Token 为 null？→ 放行（让 Security 拦截）</div>
-    <div class="flow-box green">2. validateToken() — 签名 + 过期校验</div>
-    <div class="flow-arrow down">↓</div>
-    <div class="flow-box amber">3. getTokenType() — 只接受 "access"，拒绝 "refresh"</div>
-    <div class="flow-arrow down">↓</div>
-    <div class="flow-box red">4. 检查 Redis 黑名单 — hasKey(blog:token:blacklist:{sha256})</div>
-    <div class="flow-arrow down">↓ 不在黑名单</div>
-    <div class="flow-box purple">5. 提取 userId + role → 构建 UsernamePasswordAuthenticationToken</div>
-    <div class="flow-arrow down">↓</div>
-    <div class="flow-box cyan">6. SecurityContextHolder.setAuthentication() — 认证完成</div>
-    <div class="flow-arrow down">↓</div>
-    <div class="flow-box accent">chain.doFilter() — 请求进入 Controller</div>
-  </div>
-</div>
+<p>这是 blog-auth 暴露给其他模块的<strong>唯一接口</strong>。blog-core 中的 Service 需要知道"当前是谁在操作"时，调用 <code>SecurityUtils.getCurrentUserId()</code> 即可。封装了从 SecurityContextHolder 取 Principal 的底层细节：</p>
 
-<h3>3.3 JWT 双 Token 机制</h3>
-
-<table>
-  <thead><tr><th>特性</th><th>AccessToken</th><th>RefreshToken</th></tr></thead>
-  <tbody>
-    <tr><td>有效期</td><td>15 分钟</td><td>7 天</td></tr>
-    <tr><td>存储位置</td><td>前端 Cookie / 内存</td><td>Redis (Key = blog:token:refresh:{userId})</td></tr>
-    <tr><td>用途</td><td>访问 API</td><td>刷新 AccessToken</td></tr>
-    <tr><td>载荷</td><td>userId + role + type="access"</td><td>userId + type="refresh"（无 role）</td></tr>
-    <tr><td>安全策略</td><td>短期，登出后进黑名单</td><td>哈希存储，轮换时验证一致性</td></tr>
-  </tbody>
-</table>
-
-<h3>3.4 Token 轮换 (Token Rotation) 机制</h3>
-
-<div class="diagram">
-  <div class="diagram-title">RefreshToken 轮换流程（防重放攻击）</div>
-  <div class="vflow">
-    <div class="flow-box">1. 用户携带旧 RefreshToken 请求 /refresh</div>
-    <div class="flow-arrow down">↓</div>
-    <div class="flow-box amber">2. 校验签名 + 过期 + type="refresh"</div>
-    <div class="flow-arrow down">↓</div>
-    <div class="flow-box red">3. SHA-256(旧Token) vs Redis 中存储的 hash — 不匹配？</div>
-    <div class="flow-arrow down">↓ 匹配</div>
-    <div class="flow-box green">4. 删除旧 RefreshToken（Redis）</div>
-    <div class="flow-arrow down">↓</div>
-    <div class="flow-box purple">5. 生成新 AccessToken（15min）+ 新 RefreshToken（7d）</div>
-    <div class="flow-arrow down">↓</div>
-    <div class="flow-box cyan">6. 新 RefreshToken 的 hash 写入 Redis</div>
-  </div>
-</div>
-
-<div class="highlight">
-  <p><strong>安全价值：</strong>如果有人窃取了旧的 RefreshToken，当合法用户用最新 RefreshToken 刷新后，旧 Token 的 hash 与 Redis 中不匹配，系统会检测到异常并<strong>主动删除所有 RefreshToken</strong>，强制重新登录。这就是 RefreshToken 轮换（Token Rotation）防重放的核心。</p>
-</div>
-
-<h3>3.5 登出流程：黑名单机制</h3>
-
-<p>登出时做了两件事：① 删除 Redis 中的 RefreshToken（Key = <code>blog:token:refresh:{userId}</code>）；② 将 AccessToken 的 SHA-256 哈希加入黑名单（Key = <code>blog:token:blacklist:{sha256}</code>），TTL 等于该 Token 的剩余有效时间（最长 15 分钟）。</p>
-
-<p>为什么需要黑名单？因为 JWT 是无状态的——后端发出后无法"撤回"。即使登出了，只要 Token 没过期，它本身仍然是有效的。黑名单就是用来补这个漏洞的。</p>
-
-<!-- ================================================================================== -->
-<!-- PART 4: blog-common -->
-<!-- ================================================================================== -->
-<h2 id="p4"><span class="num">四</span>blog-common 深度解析</h2>
-
-<h3>4.1 R&lt;T&gt; — 统一响应体的设计哲学</h3>
-
-<div class="highlight">
-  <p><strong>为什么不用 HTTP 状态码判断成败？</strong>HTTP 状态码只能区分 2xx/4xx/5xx，无法表达业务语义。同一个 400 状态码可能对应"参数错误"、"用户名已存在"、"余额不足"等多种情况。用 <code>R&lt;T&gt;.code</code> 的 ResultCode 枚举，前端不需要解析 HTTP 状态码，统一读 <code>response.data.code</code>。</p>
-</div>
-
-<pre><span class="token-keyword">public class</span> <span class="token-type">R</span>&lt;<span class="token-type">T</span>&gt; <span class="token-keyword">implements</span> <span class="token-type">Serializable</span> {
-    <span class="token-keyword">private</span> <span class="token-type">Integer</span> code;      <span class="token-comment">// 业务状态码</span>
-    <span class="token-keyword">private</span> <span class="token-type">String</span>  message;   <span class="token-comment">// 提示信息</span>
-    <span class="token-keyword">private</span> <span class="token-type">T</span>       data;      <span class="token-comment">// 响应数据（泛型）</span>
-    <span class="token-keyword">private</span> <span class="token-type">Long</span>    timestamp; <span class="token-comment">// 响应时间戳</span>
+<pre><span class="kw">public static</span> <span class="tp">Long</span> <span class="fn">getCurrentUserId</span>() {
+    <span class="tp">Authentication</span> auth = <span class="tp">SecurityContextHolder</span>.<span class="fn">getContext</span>().<span class="fn">getAuthentication</span>();
+    <span class="kw">if</span> (auth == <span class="kw">null</span>) <span class="kw">return null</span>;
+    <span class="kw">return</span> (<span class="tp">Long</span>) auth.<span class="fn">getPrincipal</span>();  <span class="cm">// JwtAuthFilter 把 userId 设为了 Principal</span>
 }</pre>
 
-<h3>4.2 ResultCode 枚举 — 为什么不用字符串？</h3>
+<!-- ================================================================================== -->
+<h2 id="p2-3"><span class="n">四</span>blog-core — 核心业务模块（29 个文件）</h2>
 
-<p>状态码用枚举而非字符串的三个原因：① <strong>类型安全</strong>——编译器检查，不会打成 "UNAUTHORISED"；② <strong>IDE 自动补全</strong>——不需要记住状态码字符串；③ <strong>统一语义</strong>——200=成功, 401=未登录, 403=无权限, 404=不存在，前端可以根据 code 做统一拦截（如 code=401 时弹出登录框）。</p>
-
-<h3>4.3 GlobalExceptionHandler — 为什么 Controller 不写 try-catch</h3>
-
-<div class="flow" style="flex-direction:column;align-items:center;gap:8px;margin-bottom:16px;">
-  <div class="flow-box red">Controller 抛出异常</div>
-  <div class="flow-arrow down">↓</div>
-  <div class="flow-box amber">@RestControllerAdvice 拦截</div>
-  <div class="flow-arrow down">↓</div>
-  <div class="flow-box green">转换为 R.fail(code, message) 返回</div>
+<div class="card"><h4>模块定位</h4>
+<p>📦 blog-core 是业务最密集的模块，包含<strong>文章、分类、标签、评论</strong>四大业务的完整实现。依赖 blog-auth（需要 SecurityUtils）和 blog-common。</p>
 </div>
 
-<p><strong>设计原则：</strong>Controller 不写 try-catch，异常统一抛出。由 <code>@RestControllerAdvice</code> 的 <code>GlobalExceptionHandler</code> 集中处理，保证：① Controller 代码简洁；② 错误格式全部统一为 <code>R</code> 格式；③ 异常日志集中管理（log.warn/log.error）。</p>
+<h3>4.1 数据模型层：Entity → DTO → VO → Query</h3>
 
-<h3>4.4 TraceIdFilter — 链路追踪实现</h3>
-
-<p>每个请求进入时，生成唯一 traceId 并存入 <strong>SLF4J MDC</strong>（Mapped Diagnostic Context）。MDC 是线程绑定的——同一个线程内的所有日志自动带上 traceId。请求结束后在 <code>finally</code> 块中清除 MDC，防止线程池复用导致数据串扰。</p>
-
-<p>优先读取前端传的 <code>X-Trace-Id</code> Header，没有则生成新的 16 位 UUID。同时把 traceId 通过 Response Header 回传给前端，前端可以在控制台看到每个请求的 traceId，方便排查。</p>
-
-<h3>4.5 RedisKeys — 为什么要集中管理 Key</h3>
-
-<p>所有 Redis Key 定义在 <code>RedisKeys</code> 工具类中，格式为 <code>blog:{功能}:{参数}</code>：</p>
-
-<div class="feature-grid">
-  <div class="feature-item"><h4>blog:cache:article:{id}</h4><p>文章详情缓存，TTL=1h</p></div>
-  <div class="feature-item"><h4>blog:cache:articles:page:{n}:cat:{id}</h4><p>文章分页列表，TTL=10min</p></div>
-  <div class="feature-item"><h4>blog:token:refresh:{userId}</h4><p>RefreshToken 存储</p></div>
-  <div class="feature-item"><h4>blog:token:blacklist:{sha256}</h4><p>登出 Token 黑名单</p></div>
-  <div class="feature-item"><h4>blog:stats:pv:site:{yyyyMMdd}</h4><p>站点每日访问量</p></div>
-  <div class="feature-item"><h4>blog:ratelimit:{ip}:{path}</h4><p>接口限流计数</p></div>
+<h4>为什么有四层数据对象？</h4>
+<div class="fg">
+  <div class="fi"><h4>Entity（数据库映射）</h4><p>Article.java、Category.java 等，带 @TableName、@TableId、@TableField 注解，直接对应数据库表结构。不能返回给前端——包含数据库实现细节，字段变更会影响 API。</p></div>
+  <div class="fi"><h4>DTO（前端→后端）</h4><p>ArticleDTO、CommentDTO 等，带 @NotBlank、@Size 等校验注解。只包含前端需要传的字段。如 ArticleDTO 没有 viewCount（浏览量是服务端计算的）、没有 createTime（自动填充）。</p></div>
+  <div class="fi"><h4>VO（后端→前端）</h4><p>ArticleListVO、ArticleDetailVO 等，面向展示优化。如 ArticleListVO 的 tags 是 List&lt;String&gt;（标签名），而 Entity 里根本没有 tags 字段（在关联表 article_tag 中）。VO 还承担数据组合的职责。</p></div>
+  <div class="fi"><h4>Query（查询条件）</h4><p>ArticleQuery、CommentQuery 等，封装分页参数和筛选条件。和 DTO 分开是因为"查询条件"和"创建/更新数据"的字段完全不同。</p></div>
 </div>
-
-<!-- ================================================================================== -->
-<!-- PART 5: MyBatis-Plus -->
-<!-- ================================================================================== -->
-<h2 id="p5"><span class="num">五</span>MyBatis-Plus 工程化</h2>
-
-<h3>5.1 为什么选 MyBatis-Plus？</h3>
-
-<table>
-  <thead><tr><th>对比维度</th><th>MyBatis-Plus</th><th>JPA/Hibernate</th><th>原生 MyBatis</th></tr></thead>
-  <tbody>
-    <tr><td>单表 CRUD</td><td><span class="tag tag-green">LambdaQueryWrapper 零 SQL</span></td><td>JpaRepository 自动生成</td><td>手写 XML</td></tr>
-    <tr><td>复杂查询</td><td><span class="tag tag-green">Wrapper + 自定义 SQL 混用</span></td><td>JPQL/HQL 或原生 SQL</td><td>手写 XML（灵活）</td></tr>
-    <tr><td>分页</td><td><span class="tag tag-green">Page 对象 + 插件自动拦截</span></td><td>Pageable 接口</td><td>手写 LIMIT</td></tr>
-    <tr><td>自动填充</td><td><span class="tag tag-green">MetaObjectHandler</span></td><td>@PrePersist/@PreUpdate</td><td>手写</td></tr>
-    <tr><td>学习曲线</td><td>低（Lambda 语法防字符串拼错）</td><td>中高（ORM 概念多）</td><td>高（手写 SQL）</td></tr>
-  </tbody>
-</table>
-
-<h3>5.2 LambdaQueryWrapper — 类型安全的查询构建</h3>
-
-<pre><span class="token-comment">// ★ 传统方式：字符串列名，改字段名就炸</span>
-wrapper.<span class="token-func">eq</span>(<span class="token-string">"category_id"</span>, categoryId);
-
-<span class="token-comment">// ★ MP Lambda 方式：编译器帮你检查字段名</span>
-wrapper.<span class="token-func">eq</span>(<span class="token-type">Article</span>::<span class="token-func">getCategoryId</span>, categoryId);  <span class="token-comment">// 字段改名时编译报错！</span></pre>
-
-<h3>5.3 分页插件</h3>
-
-<p>MyBatis-Plus 的分页是通过插件机制实现的：配置 <code>MybatisPlusInterceptor</code> 并添加 <code>PaginationInnerInterceptor</code>。使用时创建 <code>Page&lt;Article&gt;(pageNum, pageSize)</code> 传给 Mapper，插件自动拦截 SQL 并追加 LIMIT + 执行 COUNT 查询。</p>
-
-<h3>5.4 DTO / VO / Entity 三层分离</h3>
 
 <div class="diagram">
-  <div class="diagram-title">数据对象流转</div>
-  <div class="flow" style="flex-wrap:wrap;">
-    <div class="flow-box amber">DTO<br><span style="font-size:11px">前端 → 后端</span></div>
-    <div class="flow-arrow">→</div>
-    <div class="flow-box purple">Entity<br><span style="font-size:11px">数据库映射</span></div>
-    <div class="flow-arrow">→</div>
-    <div class="flow-box green">VO<br><span style="font-size:11px">后端 → 前端</span></div>
+  <div class="dt">一次"创建文章"请求的数据对象流转</div>
+  <div class="flow" style="flex-direction:column;align-items:center;gap:6px;">
+    <div class="fb am">前端 JSON → ArticleDTO（@Valid 校验）</div>
+    <div class="fad">↓ Controller 收到</div>
+    <div class="fb pu">Service: BeanUtil.copyProperties(dto, article) → Entity</div>
+    <div class="fad">↓ 补全默认值 + MD渲染 + 摘要</div>
+    <div class="fb gr">Mapper.insert(article) → 写入 MySQL</div>
+    <div class="fad">↓ 构建返回</div>
+    <div class="fb cy">buildDetailVO(article) → ArticleDetailVO → R.ok(vo) → 前端</div>
   </div>
 </div>
 
-<div class="highlight">
-  <p><strong>为什么 Entity 不能直接返回前端？</strong>① Entity 包含数据库实现细节（如 passwordHash），泄露到前端是安全漏洞；② Entity 字段变化会直接影响 API 响应格式，前后端强耦合；③ VO 可以做字段组合、脱敏、格式化，适配前端展示需求。</p>
-</div>
+<h3>4.2 ArticleServiceImpl — 最复杂的 Service（510 行）</h3>
 
-<!-- ================================================================================== -->
-<!-- PART 6: Category Module -->
-<!-- ================================================================================== -->
-<h2 id="p6"><span class="num">六</span>分类模块源码教学</h2>
+<h4>Markdown 渲染 — Flexmark 静态单例</h4>
+<p>为什么把 Parser 和 HtmlRenderer 定义为 <code>static final</code>？因为这两个对象是<strong>线程安全</strong>且<strong>创建成本高</strong>的。如果每次请求都 new 一个 Parser，性能会严重下降。static final 保证全局只创建一次，所有请求共享。</p>
 
-<h3>6.1 树形结构 — parentId 设计</h3>
-
-<p>分类表通过 <code>parentId</code> 字段实现树形结构：<code>parentId = NULL</code> 的为根分类，<code>parentId = 某分类ID</code> 的为子分类。这是经典的<strong>邻接表模型</strong>——最简单、最直观的树形数据存储方式。</p>
-
-<h3>6.2 为什么在内存中构建树？</h3>
-
-<p>分类数据量小（通常 &lt; 100 条），全部加载到内存后用 Java Stream 构建树，比数据库递归查询快几个数量级。实现思路：</p>
-
-<pre><span class="token-comment">// 1. 查出所有分类</span>
-<span class="token-type">List</span>&lt;<span class="token-type">Category</span>&gt; categories = categoryMapper.<span class="token-func">selectList</span>(wrapper);
-
-<span class="token-comment">// 2. 按 parentId 分组</span>
-<span class="token-type">Map</span>&lt;<span class="token-type">Long</span>, <span class="token-type">List</span>&lt;<span class="token-type">CategoryVO</span>&gt;&gt; childrenMap = vos.stream()
-    .<span class="token-func">filter</span>(vo -&gt; vo.<span class="token-func">getParentId</span>() != <span class="token-keyword">null</span>)
-    .<span class="token-func">collect</span>(<span class="token-type">Collectors</span>.<span class="token-func">groupingBy</span>(<span class="token-type">CategoryVO</span>::<span class="token-func">getParentId</span>));
-
-<span class="token-comment">// 3. 取出根节点，递归挂载子节点</span>
-<span class="token-type">List</span>&lt;<span class="token-type">CategoryVO</span>&gt; tree = vos.stream()
-    .<span class="token-func">filter</span>(vo -&gt; vo.<span class="token-func">getParentId</span>() == <span class="token-keyword">null</span>)
-    .<span class="token-func">peek</span>(vo -&gt; vo.<span class="token-func">setChildren</span>(childrenMap.<span class="token-func">getOrDefault</span>(vo.<span class="token-func">getId</span>(), <span class="token-type">List</span>.<span class="token-func">of</span>())))
-    .<span class="token-func">toList</span>();</pre>
-
-<h3>6.3 删除保护</h3>
-
-<p>删除分类前做了两道保护：① 检查是否有子分类，有则拒绝删除；② 检查是否有关联文章，有则拒绝删除。这是<strong>数据完整性</strong>的最后防线——数据库外键可能被禁用或未配置，代码层面的校验更可靠。</p>
-
-<!-- ================================================================================== -->
-<!-- PART 7: Redis Cache -->
-<!-- ================================================================================== -->
-<h2 id="p7"><span class="num">七</span>Redis 缓存设计</h2>
-
-<h3>7.1 Cache-Aside 旁路缓存模式</h3>
-
-<div class="diagram">
-  <div class="diagram-title">Cache-Aside 读写流程</div>
-  <div style="display:flex;gap:32px;flex-wrap:wrap;justify-content:center;">
-    <div class="vflow" style="flex:1;min-width:300px;">
-      <div style="font-size:13px;font-weight:600;color:var(--accent);margin-bottom:8px;text-align:center;">读操作</div>
-      <div class="flow-box">1. 查 Redis</div>
-      <div class="flow-arrow down">↓ 未命中</div>
-      <div class="flow-box amber">2. 查 DB</div>
-      <div class="flow-arrow down">↓</div>
-      <div class="flow-box green">3. 写入 Redis（设 TTL）</div>
-      <div class="flow-arrow down">↓</div>
-      <div class="flow-box accent">4. 返回数据</div>
-    </div>
-    <div class="vflow" style="flex:1;min-width:300px;">
-      <div style="font-size:13px;font-weight:600;color:var(--red);margin-bottom:8px;text-align:center;">写操作</div>
-      <div class="flow-box red">1. 删除缓存</div>
-      <div class="flow-arrow down">↓</div>
-      <div class="flow-box amber">2. 更新 DB</div>
-      <div class="flow-arrow down">↓</div>
-      <div class="flow-box red">3. 模糊删除分页缓存</div>
-      <div class="flow-arrow down">↓</div>
-      <div class="flow-box red">4. 延迟 500ms 再删一次（双删）</div>
-    </div>
-  </div>
-</div>
-
-<h3>7.2 延迟双删策略</h3>
-
-<div class="highlight">
-  <p><strong>为什么要删两次？</strong>写操作时，"先删缓存 → 更新DB → 再删缓存"是为了防止并发场景下的数据不一致：如果 A 线程更新了 DB 但还没删缓存，B 线程在这期间读到了旧缓存数据。延迟 500ms 再删一次，给并发读留出"写完 DB"的时间窗口，最终一致性概率极大提高。</p>
-</div>
-
-<h3>7.3 缓存穿透/击穿/雪崩防护</h3>
-
-<table>
-  <thead><tr><th>问题</th><th>本项目的应对</th></tr></thead>
-  <tbody>
-    <tr><td><strong>缓存穿透</strong><br>查询不存在的数据</td><td>对于不存在的数据，Service 层直接抛 NotFoundException，不缓存 null</td></tr>
-    <tr><td><strong>缓存击穿</strong><br>热点 Key 过期</td><td>热点文章 TTL 设为 1h，加上浏览量异步更新，不阻塞缓存命中</td></tr>
-    <tr><td><strong>缓存雪崩</strong><br>大量 Key 同时过期</td><td>不同数据类型的 TTL 不同：详情 1h、列表 10min、热门 30min、分类 2h。天然的错峰过期</td></tr>
-  </tbody>
-</table>
-
-<h3>7.4 Redis Key 命名规范</h3>
-
-<p>统一前缀 <code>blog:</code> + 功能分类 + 参数结构：</p>
-
-<div class="feature-grid">
-  <div class="feature-item"><h4>缓存类</h4><p><code>blog:cache:article:{id}</code><br><code>blog:cache:articles:page:{n}:cat:{id}</code><br><code>blog:cache:categories</code><br><code>blog:cache:tags</code><br><code>blog:cache:articles:hot</code></p></div>
-  <div class="feature-item"><h4>Token 类</h4><p><code>blog:token:refresh:{userId}</code> → SHA-256<br><code>blog:token:blacklist:{sha256}</code> → "1"</p></div>
-  <div class="feature-item"><h4>统计类</h4><p><code>blog:stats:pv:article:{id}:{date}</code><br><code>blog:stats:pv:site:{date}</code><br><code>blog:stats:uv:site:{date}</code></p></div>
-  <div class="feature-item"><h4>限流类</h4><p><code>blog:ratelimit:{ip}:{path}</code></p></div>
-</div>
-
-<!-- ================================================================================== -->
-<!-- PART 8: Engineering Philosophy -->
-<!-- ================================================================================== -->
-<h2 id="p8"><span class="num">八</span>项目工程化思想</h2>
-
-<div class="feature-grid">
-  <div class="feature-item">
-    <h4>为什么统一异常？</h4>
-    <p>Controller 不写 try-catch。异常由 @RestControllerAdvice 统一拦截。错误格式统一，日志集中管理，Controller 代码薄如纸。</p>
-  </div>
-  <div class="feature-item">
-    <h4>为什么统一返回 R&lt;T&gt;？</h4>
-    <p>前后端分离场景下，HTTP 状态码不够用。R 的 code 字段可以承载任意业务语义，前端不需要根据 HTTP 状态码做分支判断。</p>
-  </div>
-  <div class="feature-item">
-    <h4>为什么 Controller 不写业务逻辑？</h4>
-    <p>Controller 的职责是"接参数 → 调 Service → 返回结果"。业务逻辑在 Service 中，事务边界也在 Service。如果 Controller 写业务，测试和复用都困难。</p>
-  </div>
-  <div class="feature-item">
-    <h4>为什么 DTO/VO 分离？</h4>
-    <p>DTO（入参）和 VO（出参）面向不同方向，字段不同。入参不需要 id/createTime，出参可能需要脱敏或组合字段。分离后各自变化互不影响。</p>
-  </div>
-  <div class="feature-item">
-    <h4>为什么事务在 Service？</h4>
-    <p>@Transactional 标注在 Service 方法上，保证一个业务操作内的多个数据库操作要么全成功要么全回滚。Controller 不应该关心事务边界。</p>
-  </div>
-  <div class="feature-item">
-    <h4>为什么统一配置？</h4>
-    <p>版本号集中在父 POM，Redis Key 集中在 RedisKeys，状态码集中在 ResultCode。需要改的时候只改一处，不会遗漏。</p>
-  </div>
-</div>
-
-<!-- ================================================================================== -->
-<!-- PART 9: Frontend Architecture -->
-<!-- ================================================================================== -->
-<h1 style="margin-top:72px;" id="p9"><span class="accent">前 端</span> 架构深度教学</h1>
-<p class="header-desc">基于 Astro 5 SSR + Vue 3 的前端架构，从技术选型到组件树，逐层剖析。</p>
-
-<h3 id="p9-tech">9.1 技术栈选型：为什么是 Astro + Vue？</h3>
-
-<table>
-  <thead><tr><th>方案</th><th>优点</th><th>缺点</th><th>本项目契合度</th></tr></thead>
-  <tbody>
-    <tr><td><strong>纯 Vue SPA</strong></td><td>交互流畅，生态成熟</td><td>首屏慢，SEO 差</td><td><span class="tag tag-amber">中等</span></td></tr>
-    <tr><td><strong>Next.js (React)</strong></td><td>SSR 成熟，生态最大</td><td>学习成本高，React 心智负担</td><td><span class="tag tag-amber">中等</span></td></tr>
-    <tr><td><strong>Nuxt 3 (Vue)</strong></td><td>Vue SSR 首选</td><td>框架重，配置多</td><td><span class="tag tag-amber">中等</span></td></tr>
-    <tr><td><strong>Astro + Vue</strong></td><td>SSR 原生支持，零 JS 默认，按需水合</td><td>社区较小，部分 Vue 特性受限</td><td><span class="tag tag-green">最优</span></td></tr>
-  </tbody>
-</table>
-
-<div class="highlight">
-  <p><strong>为什么选 Astro？</strong>博客类站点 90% 的页面是静态内容（文章列表/详情/分类/标签），不需要客户端 JS。Astro 的"零 JS 默认"理念意味着这些页面在 SSR 后输出纯 HTML，不加载任何 JS bundle。只有需要交互的管理端才通过 <code>client:load</code> 水合 Vue 组件。这和"岛屿架构（Islands Architecture）"完全契合。</p>
-</div>
-
-<h3 id="p9-dir">9.2 前端目录结构设计</h3>
-
-<div class="arch-grid">
-  <div class="arch-box module"><strong>src/pages/</strong><span>基于文件的路由，Astro 自动映射</span></div>
-  <div class="arch-box module"><strong>src/layouts/</strong><span>页面外壳，Base → Public/Admin 继承</span></div>
-  <div class="arch-box module"><strong>src/components/</strong><span>可复用组件，.astro 为静态，.vue 为交互</span></div>
-  <div class="arch-box module"><strong>src/lib/</strong><span>API 封装 / 认证 / 类型定义</span></div>
-  <div class="arch-box module"><strong>src/styles/</strong><span>全局 CSS + Tailwind v4 + 设计令牌</span></div>
-  <div class="arch-box module"><strong>public/</strong><span>静态资源（favicon.svg 等）</span></div>
-</div>
-
-<h4>组件树</h4>
-<div class="diagram">
-  <div class="vflow">
-    <div class="flow-box accent">BaseLayout（HTML shell）</div>
-    <div class="flow-arrow down">↓ 被继承</div>
-    <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;">
-      <div class="flow-box green">PublicLayout</div>
-      <div class="flow-box purple">AdminLayout</div>
-    </div>
-    <div class="flow-arrow down">↓ 包含</div>
-    <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;">
-      <div class="flow-box">Header</div>
-      <div class="flow-box">Footer</div>
-      <div class="flow-box amber">Admin Sidebar</div>
-    </div>
-    <div class="flow-arrow down">↓ 页面嵌入</div>
-    <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;">
-      <div class="flow-box cyan">ArticleCard</div>
-      <div class="flow-box cyan">CommentSection.vue</div>
-      <div class="flow-box red">Dashboard.vue</div>
-      <div class="flow-box red">ArticleEdit.vue</div>
-    </div>
-  </div>
-</div>
-
-<h3 id="p9-api">9.3 API 封装层 — 双模 fetch 设计</h3>
-
-<div class="highlight">
-  <p><strong>核心问题：</strong>Astro 页面在服务端（Node.js SSR）和客户端（浏览器）都会执行 <code>fetch()</code>。Node.js 的 fetch 无法解析相对路径 <code>/api/public/articles</code>，必须用绝对 URL <code>http://localhost:8080/api/public/articles</code>。而浏览器端用相对路径即可（Vite proxy 自动转发）。</p>
-</div>
-
-<pre><span class="token-keyword">async function</span> <span class="token-func">request</span>&lt;<span class="token-type">T</span>&gt;(
-  <span class="token-type">method</span>: <span class="token-type">string</span>, <span class="token-type">path</span>: <span class="token-type">string</span>, options?: <span class="token-type">RequestOptions</span>
-): <span class="token-type">Promise</span>&lt;<span class="token-type">R</span>&lt;<span class="token-type">T</span>&gt;&gt; {
-  <span class="token-keyword">const</span> url = <span class="token-keyword">new</span> <span class="token-type">URL</span>(<span class="token-type">BASE</span> + path, <span class="token-string">'http://localhost'</span>);
-  <span class="token-comment">// ★ 环境检测</span>
-  <span class="token-keyword">const</span> isSSR = <span class="token-keyword">typeof</span> <span class="token-type">window</span> === <span class="token-string">'undefined'</span>;
-  <span class="token-keyword">const</span> fullPath = isSSR
-    ? <span class="token-string">`http://localhost:8080${url.pathname}${url.search}`</span>  <span class="token-comment">// SSR: 绝对URL</span>
-    : <span class="token-string">`${url.pathname}${url.search}`</span>;                         <span class="token-comment">// 浏览器: 相对路径+Vite proxy</span>
-  <span class="token-keyword">const</span> res = <span class="token-keyword">await</span> <span class="token-func">fetch</span>(fullPath, { method, headers, body });
-  <span class="token-comment">// ★ 双重校验</span>
-  <span class="token-keyword">if</span> (!res.ok) <span class="token-keyword">throw new</span> <span class="token-type">Error</span>(json.message || <span class="token-string">'请求失败'</span>);
-  <span class="token-keyword">if</span> (json.code !== <span class="token-number">200</span>) <span class="token-keyword">throw new</span> <span class="token-type">Error</span>(json.message || <span class="token-string">'业务错误'</span>);
+<pre><span class="kw">private static final</span> <span class="tp">Parser</span> MD_PARSER;
+<span class="kw">private static final</span> <span class="tp">HtmlRenderer</span> MD_RENDERER;
+<span class="kw">static</span> {
+    <span class="tp">MutableDataSet</span> options = <span class="kw">new</span> <span class="tp">MutableDataSet</span>();
+    MD_PARSER   = <span class="tp">Parser</span>.<span class="fn">builder</span>(options).<span class="fn">build</span>();
+    MD_RENDERER = <span class="tp">HtmlRenderer</span>.<span class="fn">builder</span>(options).<span class="fn">build</span>();
 }</pre>
 
-<h3 id="p9-auth">9.4 认证与权限</h3>
+<h4>分页查询 — 批量加载避免 N+1</h4>
+<p><code>toListVOs()</code> 方法是性能优化的核心。一个典型的分页返回 10 篇文章，如果逐条查分类名和标签名，需要 1（文章列表）+ 10（分类）+ 10×N（标签）次数据库查询——即 N+1 问题。</p>
+
+<p>该方法的处理方式是<strong>批量查询</strong>：</p>
+<ol>
+  <li>从 10 篇文章中提取所有 categoryId → 一次性 <code>categoryMapper.selectBatchIds()</code></li>
+  <li>从 10 篇文章中提取所有 articleId → 一次性查 <code>article_tag</code> 表</li>
+  <li>从关联记录中提取所有 tagId → 一次性 <code>tagMapper.selectBatchIds()</code></li>
+  <li>在内存中组装：article → categoryName + tagNames</li>
+</ol>
+<p>总共只需 4 次数据库查询，而非 1 + 10 + 10×N 次。</p>
+
+<h4>浏览量原子递增 — 避免竞态条件</h4>
+<p>如果先 read 再 update，两个并发请求可能读到相同的 viewCount，都 +1 后写回——结果只增加了 1 而不是 2。</p>
+
+<pre><span class="cm">// ★ 错误写法（有竞态）</span>
+article.<span class="fn">setViewCount</span>(article.<span class="fn">getViewCount</span>() + <span class="nu">1</span>);
+articleMapper.<span class="fn">updateById</span>(article);
+
+<span class="cm">// ★ 正确写法（原子 SQL）</span>
+articleMapper.<span class="fn">update</span>(<span class="kw">null</span>, <span class="kw">new</span> <span class="tp">LambdaUpdateWrapper</span>&lt;<span class="tp">Article</span>&gt;()
+    .<span class="fn">eq</span>(<span class="tp">Article</span>::<span class="fn">getId</span>, id)
+    .<span class="fn">setSql</span>(<span class="str">"view_count = view_count + 1"</span>));  <span class="cm">// 数据库层面原子递增</span></pre>
+
+<h4>上一篇/下一篇导航</h4>
+<p>在文章详情页底部显示"上一篇"和"下一篇"链接。实现是查比当前文章 ID 小的第一篇 PUBLISHED 文章（prev）和比当前文章 ID 大的第一篇 PUBLISHED 文章（next）：</p>
+
+<pre><span class="cm">// 上一篇: ID 更小的第一篇</span>
+articleMapper.<span class="fn">selectOne</span>(<span class="kw">new</span> <span class="tp">LambdaQueryWrapper</span>&lt;<span class="tp">Article</span>&gt;()
+    .<span class="fn">eq</span>(<span class="tp">Article</span>::<span class="fn">getStatus</span>, <span class="str">"PUBLISHED"</span>)
+    .<span class="fn">lt</span>(<span class="tp">Article</span>::<span class="fn">getId</span>, articleId)   <span class="cm">// ID 小于当前</span>
+    .<span class="fn">orderByDesc</span>(<span class="tp">Article</span>::<span class="fn">getId</span>)        <span class="cm">// 按 ID 降序 → 取最接近的</span>
+    .<span class="fn">last</span>(<span class="str">"LIMIT 1"</span>));</pre>
+
+<h3>4.3 CategoryServiceImpl — 树形结构构建</h3>
+
+<p>分类的数据库存储是平的（所有分类在同一张表中，通过 parentId 关联），但前端需要树形结构。用 Java Stream 在内存中构建树：</p>
+
+<pre><span class="cm">// 第一步：查出所有分类（最多几十条，全量加载）</span>
+<span class="tp">List</span>&lt;<span class="tp">Category</span>&gt; categories = categoryMapper.<span class="fn">selectList</span>(wrapper);
+
+<span class="cm">// 第二步：按 parentId 分组</span>
+<span class="tp">Map</span>&lt;<span class="tp">Long</span>, <span class="tp">List</span>&lt;<span class="tp">CategoryVO</span>&gt;&gt; childrenMap = vos.stream()
+    .<span class="fn">filter</span>(vo -&gt; vo.<span class="fn">getParentId</span>() != <span class="kw">null</span>)
+    .<span class="fn">collect</span>(<span class="tp">Collectors</span>.<span class="fn">groupingBy</span>(<span class="tp">CategoryVO</span>::<span class="fn">getParentId</span>));
+
+<span class="cm">// 第三步：取出顶级分类，挂载子分类</span>
+<span class="tp">List</span>&lt;<span class="tp">CategoryVO</span>&gt; tree = vos.stream()
+    .<span class="fn">filter</span>(vo -&gt; vo.<span class="fn">getParentId</span>() == <span class="kw">null</span>)   <span class="cm">// 顶级</span>
+    .<span class="fn">peek</span>(vo -&gt; vo.<span class="fn">setChildren</span>(childrenMap.<span class="fn">getOrDefault</span>(vo.<span class="fn">getId</span>(), <span class="tp">List</span>.<span class="fn">of</span>())))
+    .<span class="fn">toList</span>();</pre>
+
+<p><strong>为什么在内存中构建树而不是用数据库递归查询？</strong> 分类数据量小（通常是几十条），全部加载到内存只需一次查询。用 Stream 构建树的复杂度是 O(n)，远快于数据库的多次递归查询。而且这还有一个额外好处——可以把整个树缓存到 Redis。</p>
+
+<h4>删除保护 — 两道防线</h4>
+<p>删除分类前必须检查：① 有没有子分类（有则拒绝）；② 有没有文章关联该分类（有则拒绝）。这是<strong>数据完整性</strong>的最后防线——即使数据库外键约束未配置或被禁用，代码层面的校验仍然生效。</p>
+
+<h3>4.4 CommentServiceImpl — 评论系统</h3>
+
+<h4>XSS 防护 — Jsoup.clean()</h4>
+<p>评论是用户输入的内容，可能包含恶意脚本。用 <code>Jsoup.clean(content, Safelist.none())</code> 在存储前清洗 HTML 标签——任何 HTML 都会被剥离，只保留纯文本。</p>
+
+<h4>评论树构建</h4>
+<p>和分类树不同，评论树是<strong>两级结构</strong>——父评论和子回复。实现方式：先分页查顶级评论（parentId IS NULL），再批量查这些评论的所有子回复（parentId IN (...ids)），内存中按 parentId 分组。</p>
+
+<h4>Gravatar 头像</h4>
+<p>对评论者的邮箱做 MD5，拼接 Gravatar 的 URL：<code>https://www.gravatar.com/avatar/{md5}?d=mp</code>。这样不需要存储和上传头像，Gravatar 服务自动返回对应邮箱的头像（如果没有则返回默认头像）。</p>
+
+<h3>4.5 Controller 层 — 职责分离</h3>
+
+<p>所有 Controller 都非常薄——只做三件事：① 接收参数 ② 调用 Service ③ 包装为 R 返回。<strong>没有任何业务逻辑</strong>。Controller 层划分了 admin 和 pub 两个子包，对应 /api/admin/** 和 /api/public/** 两个路径前缀。路径本身就表达了权限意图。</p>
+
+<!-- ================================================================================== -->
+<h2 id="p2-4"><span class="n">五</span>blog-file — 文件管理模块（4 个文件）</h2>
+
+<h3>5.1 FileServiceImpl — 文件上传安全</h3>
+
+<p>文件上传是安全风险最高的功能之一。这个 ServiceImpl 的安全策略：</p>
+
+<pre><span class="cm">// ★ 双重白名单校验</span>
+<span class="kw">private static final</span> <span class="tp">Set</span>&lt;<span class="tp">String</span>&gt; IMAGE_EXTENSIONS = <span class="tp">Set</span>.<span class="fn">of</span>(
+    <span class="str">"jpg"</span>, <span class="str">"jpeg"</span>, <span class="str">"png"</span>, <span class="str">"gif"</span>, <span class="str">"webp"</span>, <span class="str">"svg"</span>
+);
+
+<span class="cm">// ① 扩展名校验 — 文件后缀必须在白名单中</span>
+<span class="tp">String</span> ext = <span class="tp">FilenameUtils</span>.<span class="fn">getExtension</span>(originalName).<span class="fn">toLowerCase</span>();
+<span class="kw">if</span> (!IMAGE_EXTENSIONS.<span class="fn">contains</span>(ext)) <span class="kw">throw</span> ...;
+
+<span class="cm">// ② MIME 类型二次校验 — 防止把 .jsp 改成 .jpg 绕过扩展名校验</span>
+<span class="tp">String</span> contentType = file.<span class="fn">getContentType</span>();
+<span class="kw">if</span> (contentType == <span class="kw">null</span> || !contentType.<span class="fn">startsWith</span>(<span class="str">"image/"</span>)) <span class="kw">throw</span> ...;</pre>
+
+<p><strong>为什么扩展名 + MIME 双重校验？</strong> 攻击者可以把一个可执行文件改名为 <code>virus.jpg</code> 上传。单独的扩展名校验会被绕过。MIME 类型由文件内容决定，比扩展名更可信。两层校验叠加，安全性显著提升。</p>
+
+<p>文件存储路径使用 UUID 重命名：<code>{uploadPath}/images/{yyyy/MM}/{uuid}.{ext}</code>。UUID 防冲突 + 防猜测（攻击者无法遍历文件名）+ 按日期分目录（防止单目录文件过多）。</p>
+
+<!-- ================================================================================== -->
+<h2 id="p2-5"><span class="n">六</span>blog-api — 启动聚合模块</h2>
+
+<h3>6.1 BlogApplication — 为什么只有一个 main？</h3>
+
+<p>整个项目只有这一处 <code>@SpringBootApplication</code>。其他模块（blog-common/blog-auth/blog-core/blog-file）都是<strong>库模块</strong>——它们在编译期被 blog-api 依赖，运行期代码被合并到同一个 JVM 进程中。这是单体应用的标准做法。</p>
+
+<p><code>@SpringBootApplication</code> 包含 <code>@ComponentScan</code>，由于启动类在 <code>com.blog</code> 包下，所有子模块的 <code>com.blog.xxx</code> 包下的组件都会被自动扫描到——不需要任何额外的 <code>@Import</code> 或配置。</p>
+
+<h3>6.2 配置文件 — 环境分离</h3>
+<p><code>application.yml</code> 定义公共配置，<code>application-dev.yml</code> 和 <code>application-prod.yml</code> 覆盖环境相关配置（数据库连接、Redis 地址、JWT 密钥、日志级别）。通过 <code>SPRING_PROFILES_ACTIVE</code> 环境变量切换——开发时默认 dev，Docker 部署时设为 prod。</p>
+
+<!-- ================================================================================== -->
+<h1 style="margin-top:56px;">第三部分：核心机制深度解析</h1>
+<!-- ================================================================================== -->
+
+<h2 id="p3-1"><span class="n">七</span>认证鉴权全链路深度解析</h2>
+
+<h3>7.1 一个请求的完整鉴权路径</h3>
 
 <div class="diagram">
-  <div class="diagram-title">前后端鉴权时序图</div>
-  <div class="vflow">
-    <div class="flow-box accent">1. 用户访问 /login → 输入用户名密码</div>
-    <div class="flow-arrow down">↓</div>
-    <div class="flow-box">2. POST /api/public/auth/login</div>
-    <div class="flow-arrow down">↓</div>
-    <div class="flow-box green">3. 后端返回 {accessToken, refreshToken, userId, ...}</div>
-    <div class="flow-arrow down">↓</div>
-    <div class="flow-box amber">4. auth.ts: accessToken → Cookie / refreshToken → localStorage</div>
-    <div class="flow-arrow down">↓</div>
-    <div class="flow-box purple">5. 后续请求: api.ts 从 Cookie 读 accessToken → Authorization Header</div>
-    <div class="flow-arrow down">↓</div>
-    <div class="flow-box cyan">6. JwtAuthFilter: 解析 JWT → 设置 SecurityContext</div>
+  <div class="dt">GET /api/admin/articles/page?status=PUBLISHED 完整鉴权链路</div>
+  <div class="vf">
+    <div class="fb ac">1. 浏览器发送请求 → Authorization: Bearer eyJhbG...</div>
+    <div class="fad">↓</div>
+    <div class="fb cy">2. TraceIdFilter: 生成/读取 X-Trace-Id → MDC.put("traceId")</div>
+    <div class="fad">↓</div>
+    <div class="fb pu">3. JwtAuthFilter.doFilterInternal()</div>
+    <div style="font-size:11px;color:var(--text-tertiary);margin:3px 0;">├─ extractToken() → "eyJhbG..."</div>
+    <div style="font-size:11px;color:var(--text-tertiary);margin:3px 0;">├─ validateToken() → ✓ 签名有效，未过期</div>
+    <div style="font-size:11px;color:var(--text-tertiary);margin:3px 0;">├─ getTokenType() → "access" ✓</div>
+    <div style="font-size:11px;color:var(--text-tertiary);margin:3px 0;">├─ Redis 黑名单检查 → 不在黑名单 ✓</div>
+    <div style="font-size:11px;color:var(--text-tertiary);margin:3px 0;">└─ 提取 userId=1, role=ADMIN → SecurityContext.setAuthentication()</div>
+    <div class="fad">↓</div>
+    <div class="fb am">4. Security FilterChain.authorizeHttpRequests()</div>
+    <div style="font-size:11px;color:var(--text-tertiary);margin:3px 0;">/api/admin/** 要求 hasRole("ADMIN") → ✓ 匹配</div>
+    <div class="fad">↓</div>
+    <div class="fb gr">5. AdminArticleController.page() → articleService.adminPageArticles() → R.ok(page)</div>
+    <div class="fad">↓</div>
+    <div class="fb ac">6. 响应返回 JSON → TraceIdFilter.finally { MDC.clear() }</div>
   </div>
 </div>
 
-<p><strong>Token 刷新机制：</strong>accessToken 过期（15min）后，前端调用 <code>refreshApi(refreshToken)</code>。后端验证 refreshToken 签名 + Redis 中匹配 → 返回新的 accessToken + refreshToken → 前端更新 Cookie。用户无感。</p>
+<h3>7.2 为什么 RefreshToken 存在 Redis 而 AccessToken 不存在？</h3>
 
-<p><strong>路由权限：</strong>管理端页面（/admin/*）中的 Vue 组件通过 <code>client:load</code> 在浏览器侧渲染，API 调用自动附带 Cookie 中的 Token。后端 <code>/api/admin/**</code> 要求 <code>hasRole("ADMIN")</code>，未授权请求返回 403。</p>
+<div class="fg">
+  <div class="fi"><h4>AccessToken（不存 Redis）</h4><p>15 分钟过期，每次 API 请求都要验证。如果每次查 Redis，Redis 成为瓶颈。JWT 自包含 userId+role，本地验签即可。登出后通过黑名单（Token 的 SHA-256 哈希）处理，但黑名单中的 Token 最多存活 15 分钟。</p></div>
+  <div class="fi"><h4>RefreshToken（存 Redis）</h4><p>7 天过期，需要支持"主动吊销"。用户在"我授权的设备"页面点击"踢下线"，后端直接删除 Redis 中该用户的 RefreshToken——该设备下次刷新时发现 Redis 中不存在，强制重新登录。</p></div>
+</div>
 
-<h3 id="p9-callchain">9.5 前后端完整调用链</h3>
+<h3>7.3 完整鉴权时序图（前后端联动）</h3>
 
 <div class="diagram">
-  <div class="diagram-title">用户点击"发布文章" → 数据入库完整链路</div>
-  <div class="flow" style="flex-direction:column;align-items:center;gap:4px;">
-    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:center;">
-      <div class="flow-box accent">ArticleEdit.vue<br><span style="font-size:11px">handleSave('PUBLISHED')</span></div>
-      <div class="flow-arrow">→</div>
-      <div class="flow-box green">api.ts<br><span style="font-size:11px">createArticle(dto)</span></div>
-      <div class="flow-arrow">→</div>
-      <div class="flow-box purple">fetch /api/admin/articles<br><span style="font-size:11px">Authorization: Bearer xxx</span></div>
+  <div class="dt">登录 → API 调用 → Token 过期 → 刷新 → 重新请求</div>
+  <div class="vf">
+    <div class="fb ac">1. 用户访问 /login → 输入用户名密码</div>
+    <div class="fad">↓</div>
+    <div class="fb gr">2. POST /api/public/auth/login → 后端返回 {accessToken, refreshToken}</div>
+    <div class="fad">↓</div>
+    <div class="fb pu">3. 前端 auth.ts: accessToken → Cookie, refreshToken → localStorage</div>
+    <div class="fad">↓</div>
+    <div class="fb cy">4. 后续请求: api.ts 从 Cookie 读 accessToken → Authorization Header</div>
+    <div class="fad">↓</div>
+    <div class="fb am">5. 15 分钟后 accessToken 过期 → 后端返回 401</div>
+    <div class="fad">↓</div>
+    <div class="fb rd">6. 前端检测到 401 → 调用 refreshApi(refreshToken)</div>
+    <div class="fad">↓</div>
+    <div class="fb gr">7. 后端验证 refreshToken → 签发新双 Token → 前端更新存储</div>
+    <div class="fad">↓</div>
+    <div class="fb ac">8. 重试原请求（用户无感，全程无页面跳转）</div>
+  </div>
+</div>
+
+<!-- ================================================================================== -->
+<h2 id="p3-2"><span class="n">八</span>Redis 缓存设计深度解析</h2>
+
+<h3>8.1 Cache-Aside 模式的完整实现</h3>
+
+<p>Cache-Aside（旁路缓存）是最经典的缓存模式。核心思想：<strong>应用程序自己管理缓存的读写，缓存层不和数据库层直接交互。</strong></p>
+
+<div class="diagram">
+  <div class="dt">Cache-Aside 读写流程</div>
+  <div style="display:flex;gap:28px;flex-wrap:wrap;justify-content:center;">
+    <div class="vf" style="flex:1;min-width:280px;">
+      <div style="text-align:center;font-weight:600;color:var(--accent);margin-bottom:8px;">读操作</div>
+      <div class="fb">① 先查 Redis</div>
+      <div class="fad">↓ 命中 → 直接返回</div>
+      <div class="fb">↓ 未命中</div>
+      <div class="fb am">② 查 MySQL</div>
+      <div class="fad">↓</div>
+      <div class="fb gr">③ 写入 Redis（设 TTL）</div>
+      <div class="fad">↓</div>
+      <div class="fb ac">④ 返回数据</div>
     </div>
-    <div class="flow-arrow down" style="margin:8px 0;">↓ HTTP 请求 ↓</div>
-    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:center;">
-      <div class="flow-box red">JwtAuthFilter<br><span style="font-size:11px">验签 + 黑名单</span></div>
-      <div class="flow-arrow">→</div>
-      <div class="flow-box amber">AdminArticleController<br><span style="font-size:11px">R<ArticleDetailVO> create()</span></div>
-      <div class="flow-arrow">→</div>
-      <div class="flow-box cyan">ArticleServiceImpl<br><span style="font-size:11px">@Transactional / 渲染 MD / saveTags</span></div>
-      <div class="flow-arrow">→</div>
-      <div class="flow-box green">ArticleMapper.insert()<br><span style="font-size:11px">MP 自动填充 createTime</span></div>
-    </div>
-    <div class="flow-arrow down" style="margin:8px 0;">↓ ↓</div>
-    <div style="display:flex;gap:12px;align-items:center;">
-      <div class="flow-box accent">MySQL<br><span style="font-size:11px">INSERT INTO article</span></div>
-      <div class="flow-box red">Redis<br><span style="font-size:11px">删除分页缓存</span></div>
-    </div>
-    <div class="flow-arrow down" style="margin:8px 0;">↓ 返回</div>
-    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:center;">
-      <div class="flow-box green">R<ArticleDetailVO></div>
-      <div class="flow-arrow">→</div>
-      <div class="flow-box purple">api.ts: json.code=200 ✓</div>
-      <div class="flow-arrow">→</div>
-      <div class="flow-box accent">window.location = '/admin/articles'</div>
+    <div class="vf" style="flex:1;min-width:280px;">
+      <div style="text-align:center;font-weight:600;color:var(--red);margin-bottom:8px;">写操作</div>
+      <div class="fb rd">① 删除缓存</div>
+      <div class="fad">↓</div>
+      <div class="fb am">② 更新 MySQL</div>
+      <div class="fad">↓</div>
+      <div class="fb rd">③ 模糊删除相关缓存</div>
+      <div class="fad">↓</div>
+      <div class="fb rd">④ 延迟 500ms 再删一次（双删）</div>
     </div>
   </div>
 </div>
 
-<h3 id="p9-engineering">9.6 前端工程化思想</h3>
+<h3>8.2 延迟双删 — ArticleServiceImpl 的实际代码</h3>
 
-<div class="feature-grid">
-  <div class="feature-item">
-    <h4>为什么不能页面直接请求接口？</h4>
-    <p>直接把 fetch 写在页面里会导致：Token 注入逻辑散落各处、错误处理不一致、API 路径硬编码。封装成 api.ts 后，31 个 API 函数共享同一套请求逻辑。</p>
-  </div>
-  <div class="feature-item">
-    <h4>为什么 Layout 分层？</h4>
-    <p>BaseLayout → PublicLayout/AdminLayout 三层继承。Base 负责 HTML shell 和 SEO meta，Public 加 Header/Footer，Admin 加侧边栏。需要改全局样式只改 Base，需要改管理端导航只改 Admin。</p>
-  </div>
-  <div class="feature-item">
-    <h4>为什么组件化？</h4>
-    <p>ArticleCard、Pagination、TagPill 等组件在多个页面复用。改一个文件，所有用到的地方自动更新。组件 Props 定义了明确的输入接口。</p>
-  </div>
-  <div class="feature-item">
-    <h4>为什么 SSR + 客户端混合？</h4>
-    <p>公共页面（首页/详情/搜索）在服务端渲染 HTML → SEO 友好 + 首屏快。管理端 Vue 组件通过 client:load 在浏览器侧水合 → 交互灵活。这是 Astro "岛屿架构"的精髓。</p>
+<pre><span class="cm">// updateArticle() 中的延迟双删</span>
+<span class="cm">// 第一次删除：更新 DB 前</span>
+redisTemplate.<span class="fn">delete</span>(RedisKeys.CACHE_ARTICLE + id);
+
+<span class="cm">// 更新数据库</span>
+articleMapper.<span class="fn">updateById</span>(article);
+
+<span class="cm">// 清理分页缓存（因为文章变了，列表页也要刷新）</span>
+<span class="fn">invalidatePageCache</span>();
+
+<span class="cm">// 第二次删除：500ms 后再删一次</span>
+<span class="kw">try</span> { <span class="tp">Thread</span>.<span class="fn">sleep</span>(<span class="nu">500</span>); } <span class="kw">catch</span> (...) { ... }
+redisTemplate.<span class="fn">delete</span>(RedisKeys.CACHE_ARTICLE + id);</pre>
+
+<div class="hl">
+  <p><strong>为什么删两次？</strong>第一次删除后到第二次删除之间的 500ms，如果有并发读请求到来，它发现缓存为空，会去查 DB（此时 DB 已经更新完毕），然后把最新数据写入缓存。第二次删除是兜底——如果有一个读请求在第一次删除之前就已经查了旧数据，在第一次删除之后把它写入缓存，第二次删除会清理这个脏数据。500ms 是经验值，足够大部分并发读完成"查 DB → 写缓存"的流程。</p>
+</div>
+
+<h3>8.3 为什么不同数据用不同 TTL？</h3>
+
+<table>
+  <thead><tr><th>缓存类型</th><th>TTL</th><th>原因</th></tr></thead>
+  <tbody>
+    <tr><td>文章详情</td><td>1 小时</td><td>文章写完很少改动，1 小时延迟可接受</td></tr>
+    <tr><td>前台分页列表</td><td>10 分钟</td><td>新文章发布后应在 10 分钟内显示在列表</td></tr>
+    <tr><td>热门文章</td><td>30 分钟</td><td>浏览量变化慢，30 分钟更新一次足够</td></tr>
+    <tr><td>分类树</td><td>2 小时</td><td>分类几乎不改，2 小时很保守</td></tr>
+    <tr><td>标签列表</td><td>2 小时</td><td>同上</td></tr>
+  </tbody>
+</table>
+
+<div class="hl">
+  <p><strong>不同 TTL 天然防止缓存雪崩。</strong>如果所有缓存都用同一个 TTL（比如 1 小时），那每到整点所有缓存同时过期，瞬间所有请求打向数据库——这就是缓存雪崩。不同 TTL 让缓存过期时间错开，流量分担到不同时刻。</p>
+</div>
+
+<h3>8.4 为什么要用 Map 包装缓存值？</h3>
+
+<p>Redis 序列化使用 <code>GenericJackson2JsonRedisSerializer</code> 并启用了 <code>DefaultTyping.NON_FINAL</code>。但 JSON 反序列化 <code>ArrayList</code> 时可能因为泛型擦除丢失类型信息。用 <code>Map&lt;String, Object&gt;</code> 包装一层（<code>{"data": [...]}</code>），Jackson 可以正确保留内部泛型类型。这是 JSON 序列化框架在处理 Java 泛型时的常见 workaround。</p>
+
+<h3>8.5 为什么有搜索条件时跳过缓存？</h3>
+<p>搜索关键词是用户任意输入的，组合几乎无穷无尽。缓存这些结果命中率极低，反而会占满 Redis 内存。所以 <code>ArticleServiceImpl</code> 中判断 <code>if (StringUtils.hasText(query.getKeyword())) → 不走缓存</code>。这是"缓存不值得"的经典场景。</p>
+
+<!-- ================================================================================== -->
+<h2 id="p3-3"><span class="n">九</span>MyBatis-Plus 工程化实践</h2>
+
+<h3>9.1 LambdaQueryWrapper — 类型安全的革命</h3>
+
+<p>传统 MyBatis 的字符串列名有两个痛点：① 拼写错误编译期不报错；② 数据库改字段名时，IDE 无法自动重构所有引用。</p>
+
+<pre><span class="cm">// 传统写法（字符串列名）</span>
+wrapper.<span class="fn">eq</span>(<span class="str">"categroy_id"</span>, categoryId);  <span class="cm">// 拼错了！编译不报错，运行时才发现</span>
+
+<span class="cm">// Lambda 写法（方法引用）</span>
+wrapper.<span class="fn">eq</span>(<span class="tp">Category</span>::<span class="fn">getCategoryId</span>, categoryId);  <span class="cm">// 编译报错：找不到 getCategroyId</span></pre>
+
+<h3>9.2 分页插件的内幕</h3>
+<p>MyBatis-Plus 的 <code>PaginationInnerInterceptor</code> 拦截了 MyBatis 的 Executor：</p>
+<ol>
+  <li>检测到 SQL 是 SELECT 语句且参数中有 Page 对象</li>
+  <li>先执行 COUNT 查询（自动去掉 ORDER BY 和 SELECT 字段，只保留 FROM 和 WHERE）</li>
+  <li>把 COUNT 结果写入 Page.total</li>
+  <li>在原 SQL 末尾追加 LIMIT offset,size</li>
+  <li>执行分页查询，结果写入 Page.records</li>
+</ol>
+
+<h3>9.3 MetaObjectHandler — 自动填充的原理</h3>
+<p>每次 MyBatis-Plus 执行 insert 或 update 时，<code>MetaObjectHandler</code> 拦截并检查 Entity 中标注了 <code>@TableField(fill = FieldFill.INSERT)</code> 的字段，自动调用 fill 方法设置值。这样就不需要在每个 Service 方法里手动 <code>article.setCreateTime(LocalDateTime.now())</code>。</p>
+
+<h3>9.4 为什么用 BeanUtil.copyProperties？</h3>
+<p><code>ArticleServiceImpl.createArticle()</code> 中用了 Hutool 的 <code>BeanUtil.copyProperties(dto, article)</code>。因为 ArticleDTO 和 Article 有大量同名同类型字段（title、contentMd、coverImage 等），逐个 set 只会产生大量机械代码。但注意：copyProperties 之后再手动设置默认值（status=DRAFT、viewCount=0 等），因为 DTO 中没有这些字段。</p>
+
+<!-- ================================================================================== -->
+<h2 id="p3-4"><span class="n">十</span>项目工程化思想总结</h2>
+
+<div class="fg">
+  <div class="fi"><h4>统一返回格式</h4><p>R&lt;T&gt; 保证前端对接成本为 O(1)。如果 25 个接口返回 25 种格式，前端要写 25 套解析逻辑。</p></div>
+  <div class="fi"><h4>统一异常处理</h4><p>Controller 不写 try-catch。异常统一抛 → @RestControllerAdvice 统一拦截 → 统一转 R。异常日志集中管理。</p></div>
+  <div class="fi"><h4>三层数据对象</h4><p>Entity(DB) ≠ DTO(入参) ≠ VO(出参)。各层变化互不影响，接口向后兼容。</p></div>
+  <div class="fi"><h4>Controller 薄如纸</h4><p>接参数 → 调 Service → 返回 R。业务逻辑全在 Service，事务边界全在 Service。</p></div>
+  <div class="fi"><h4>配置集中管理</h4><p>版本号在父 POM，Redis Key 在 RedisKeys，状态码在 ResultCode。改一处即改全局。</p></div>
+  <div class="fi"><h4>模块边界清晰</h4><p>Maven 多模块 = 编译期强制执行代码边界。不会出现"写着写着就相互引用"的失控。</p></div>
+</div>
+
+<!-- ================================================================================== -->
+<h1 style="margin-top:56px;">第四部分：前端架构</h1>
+<!-- ================================================================================== -->
+
+<h2 id="p4-1"><span class="n">十一</span>前端架构深度教学</h2>
+
+<h3>11.1 Astro + Vue 的"岛屿架构"</h3>
+
+<div class="diagram">
+  <div class="dt">页面渲染模式</div>
+  <div style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center;">
+    <div class="vf" style="flex:1;min-width:220px;">
+      <div style="font-weight:600;color:var(--accent);margin-bottom:8px;text-align:center">公共页面（SSR）</div>
+      <div class="fb gr">index.astro（首页）</div>
+      <div class="fad">↓</div>
+      <div class="fb gr">articles/[id].astro（详情）</div>
+      <div class="fad">↓</div>
+      <div class="fb gr">search.astro（搜索）</div>
+      <div style="font-size:11px;color:var(--text-tertiary);text-align:center;margin-top:8px;">服务端渲染 → 输出纯 HTML<br>零 JS 传输 → 首屏极快<br>SEO 友好</div>
+    </div>
+    <div class="vf" style="flex:1;min-width:220px;">
+      <div style="font-weight:600;color:var(--purple);margin-bottom:8px;text-align:center">管理端（SPA）</div>
+      <div class="fb pu">admin/articles.astro（壳）</div>
+      <div class="fad">↓ client:load</div>
+      <div class="fb pu">ArticleList.vue（水合）</div>
+      <div class="fad">↓ client:load</div>
+      <div class="fb pu">ArticleEdit.vue（水合）</div>
+      <div style="font-size:11px;color:var(--text-tertiary);text-align:center;margin-top:8px;">浏览器端渲染 → Vue 组件<br>完整交互能力<br>无需 SEO</div>
+    </div>
   </div>
 </div>
 
-<!-- ========== FOOTER ========== -->
-<div style="margin-top:80px;padding-top:40px;border-top:1px solid var(--border);text-align:center;">
-  <p style="color:var(--text-tertiary);font-size:13px;">
-    博客系统全栈源码教学文档 · 基于项目真实代码生成 · ZK1ing/blog-server + ZK1ing/blog-frontend-astro
+<h3>11.2 API 层双模 fetch</h3>
+<p><code>src/lib/api.ts</code> 中的 <code>request()</code> 函数自动检测运行环境：<code>typeof window === 'undefined'</code> 为 SSR → 用绝对 URL <code>http://localhost:8080</code>；否则为浏览器 → 用相对路径（走 Vite proxy 转发）。</p>
+
+<h3>11.3 管理端路由 — 为什么不用 Vue Router？</h3>
+<p>Astro 的文件路由已经提供了服务端路由能力。管理端的每个页面是独立的 Astro 页面（/admin/articles、/admin/categories 等），页面加载时通过 <code>client:load</code> 指令挂载对应的 Vue 组件。这比用 Vue Router 做 SPA 更简单——不需要配置前端路由表、不需要处理 history mode 的 fallback。</p>
+
+<h3>11.4 前后端完整调用链</h3>
+<div class="diagram">
+  <div class="dt">用户点击"发布文章"的完整数据流</div>
+  <div class="vf">
+    <div class="fb ac">ArticleEdit.vue → handleSave('PUBLISHED')</div>
+    <div class="fad">↓</div>
+    <div class="fb gr">api.ts → createArticle(dto) → fetch POST /api/admin/articles</div>
+    <div class="fad">↓ HTTP</div>
+    <div class="fb pu">JwtAuthFilter → 验证签名 → 检查黑名单 → 设置 SecurityContext</div>
+    <div class="fad">↓</div>
+    <div class="fb am">Security FilterChain → /api/admin/** hasRole("ADMIN") → ✓</div>
+    <div class="fad">↓</div>
+    <div class="fb rd">AdminArticleController.create(@Valid ArticleDTO)</div>
+    <div class="fad">↓</div>
+    <div class="fb cy">ArticleServiceImpl.createArticle(@Transactional)</div>
+    <div style="font-size:11px;color:var(--text-tertiary);margin:3px 0;">├─ BeanUtil.copyProperties(dto, article)</div>
+    <div style="font-size:11px;color:var(--text-tertiary);margin:3px 0;">├─ 设置默认值（status, allowComment, isTop, viewCount）</div>
+    <div style="font-size:11px;color:var(--text-tertiary);margin:3px 0;">├─ Flexmark 渲染 Markdown → HTML</div>
+    <div style="font-size:11px;color:var(--text-tertiary);margin:3px 0;">├─ 自动生成摘要（去 HTML 标签，截 200 字符）</div>
+    <div style="font-size:11px;color:var(--text-tertiary);margin:3px 0;">├─ articleMapper.insert(article)</div>
+    <div style="font-size:11px;color:var(--text-tertiary);margin:3px 0;">├─ saveTags(articleId, tagIds) → 批量 insert article_tag</div>
+    <div style="font-size:11px;color:var(--text-tertiary);margin:3px 0;">└─ invalidatePageCache() → Redis 删除分页缓存</div>
+    <div class="fad">↓ 返回</div>
+    <div class="fb gr">R.ok(ArticleDetailVO) → JSON → api.ts → window.location='/admin/articles'</div>
+  </div>
+</div>
+
+<div style="margin-top:72px;padding-top:36px;border-top:1px solid var(--border);text-align:center;">
+  <p style="color:var(--text-tertiary);font-size:12px;">
+    博客系统全栈源码教学文档 v2.0 · 基于项目真实代码生成<br>
+    ZK1ing/blog-server + ZK1ing/blog-frontend-astro
   </p>
 </div>
 
 </main>
 
 <script>
-// Active nav link tracking
-const sections = document.querySelectorAll('h2[id], h1[id], h3[id]');
-const navLinks = document.querySelectorAll('.sidebar nav a');
-const observer = new IntersectionObserver(entries => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      navLinks.forEach(a => {
-        a.classList.toggle('active', a.getAttribute('href') === '#' + entry.target.id);
-      });
-    }
-  });
-}, { rootMargin: '-80px 0px -80% 0px' });
-sections.forEach(s => observer.observe(s));
+const sec=document.querySelectorAll('h2[id],h1[id],h3[id]');
+const nav=document.querySelectorAll('.sidebar nav a');
+const obs=new IntersectionObserver(e=>{e.forEach(e=>{if(e.isIntersecting){nav.forEach(a=>{a.classList.toggle('active',a.getAttribute('href')==='#'+e.target.id)})}})},{rootMargin:'-60px 0px -80% 0px'});
+sec.forEach(s=>obs.observe(s));
 </script>
 
 </body>
